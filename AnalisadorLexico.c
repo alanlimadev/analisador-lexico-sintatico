@@ -3,6 +3,11 @@
 #include<string.h>
 #include<ctype.h>
 
+typedef struct Token{
+    int tokenType;
+    char name[30];
+}Token;
+
 #define LETTER 0 
 #define DIGIT 1
 #define CONTROL 98
@@ -20,24 +25,33 @@
 #define MULTIPLY_OP 17
 #define DIVIDE_OP 18
 #define COMMA 19
-#define AND_OP 20
-#define OR_OP 21
-#define NOT_OP 22
+#define LOGIC_OP 20
 
+#define FOR_STMT 21
+#define ELSE_STMT 22
 #define IF_STMT 23
+
 #define ACESS_MOD 24
 #define LEFT_PAREN 25 
 #define RIGHT_PAREN 26
 #define STATIC_KW 27
 #define WHILE_STMT 28
-#define UNKNOW_TOKEN 29
+#define QUOT_MARK 29;
+#define UNKNOW_TOKEN 404
+
 int charClass;
 char lexema[100];
 int lex_lengh=0;
 char nextChar;
 int nextToken;
+Token nextTokenn;
 int lineCount=1;
 FILE *in_fp, *fopen();
+
+void fillToken(char* name, int tokenType){ //preencher strcut token
+    strcpy(nextTokenn.name,name);
+    nextTokenn.tokenType = tokenType;
+}
 
 void getChar(){ //le o prox char e atualiza a sua classe
     nextChar=getc(in_fp);
@@ -77,6 +91,8 @@ int keyWordToken(){
     if(strcmp(lexema,"static")==0) return STATIC_KW;
     if(strcmp(lexema,"if")==0) return IF_STMT;
     if(strcmp(lexema,"while")==0) return WHILE_STMT;
+    if(strcmp(lexema,"for")==0) return FOR_STMT;
+    if(strcmp(lexema,"else")==0) return ELSE_STMT;
     return IDENT;
 }
 int lookup(int ch){ //responsavel por identificar o token
@@ -84,11 +100,11 @@ int lookup(int ch){ //responsavel por identificar o token
     {
     case '(':
         addAndGetNextChar();
-        nextToken = LEFT_PAREN;
+        fillToken("LEFT_PAREN",LEFT_PAREN);
         break;
     case ')':
         addAndGetNextChar();
-        nextToken = RIGHT_PAREN;
+        fillToken("RIGHT_PAREN",RIGHT_PAREN);
         break;
     case '+':
         addAndGetNextChar();
@@ -118,10 +134,10 @@ int lookup(int ch){ //responsavel por identificar o token
         addAndGetNextChar();
         nextToken = COMMA;
         break;
-    case '\n':
-        //lineCount++;
-        //getChar();
-        break;                   
+    case '"':
+        addAndGetNextChar();
+        nextToken = QUOT_MARK;
+        break;                           
     default:
         if(nextChar!=EOF)
             nextToken = UNKNOW_TOKEN;
@@ -129,6 +145,9 @@ int lookup(int ch){ //responsavel por identificar o token
             nextToken = EOF;
         addAndGetNextChar();
         break;
+    }
+    if(nextChar=='<'||nextChar=='!'||nextChar=='>'){
+        nextToken = LOGIC_OP;
     }
 }
 int lex(){
@@ -170,7 +189,7 @@ int lex(){
     if(nextToken==UNKNOW_TOKEN)
         printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else
-        printf("Proximo token: %d, Proximo lexema: %s\n",nextToken,lexema);
+        printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
     return nextToken;
 }
 
