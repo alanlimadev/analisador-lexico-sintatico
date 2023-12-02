@@ -1,8 +1,11 @@
-int x =  10, b = 20, c =30;
-if(a>b){
-
+//taça papai
+//pula gaviao
+&& || A ^B
+public static void main(){
+    string paulo = "Valor";
 }
-while();
-public static void Main(){
-    
+while(A>B){
+    if(x < C){
+        peaga;
+    }
 }

@@ -3,6 +3,11 @@
 #include<string.h>
 #include<ctype.h>
 
+typedef struct Token{
+    int tokenType;
+    char name[30];
+}Token;
+
 #define LETTER 0 
 #define DIGIT 1
 #define CONTROL 98
@@ -20,24 +25,35 @@
 #define MULTIPLY_OP 17
 #define DIVIDE_OP 18
 #define COMMA 19
-#define AND_OP 20
-#define OR_OP 21
-#define NOT_OP 22
+#define LOGIC_OP 20
 
+#define FOR_STMT 21
+#define ELSE_STMT 22
 #define IF_STMT 23
+
 #define ACESS_MOD 24
 #define LEFT_PAREN 25 
 #define RIGHT_PAREN 26
 #define STATIC_KW 27
 #define WHILE_STMT 28
-#define UNKNOW_TOKEN 29
+#define QUOT_MARK 29
+#define BRACE_LEFT 30
+#define BRACE_RIGHT 31
+#define UNKNOW_TOKEN 404
+
 int charClass;
 char lexema[100];
 int lex_lengh=0;
 char nextChar;
 int nextToken;
+Token nextTokenn;
 int lineCount=1;
 FILE *in_fp, *fopen();
+
+void fillToken(char* name, int tokenType){ //preencher strcut token
+    strcpy(nextTokenn.name,name);
+    nextTokenn.tokenType = tokenType;
+}
 
 void getChar(){ //le o prox char e atualiza a sua classe
     nextChar=getc(in_fp);
@@ -71,62 +87,117 @@ void getNonBlank(){ //ignorar espaços em branco
         getChar();
     } 
 }
-int keyWordToken(){
-    if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)return ACESS_MOD;
-    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0)return VAR_TYPE;
-    if(strcmp(lexema,"static")==0) return STATIC_KW;
-    if(strcmp(lexema,"if")==0) return IF_STMT;
-    if(strcmp(lexema,"while")==0) return WHILE_STMT;
-    return IDENT;
+void getNonComments(){
+        if(nextChar=='/'){
+        char next =getc(in_fp);
+        if(next=='/'){
+            while(next!='\n' && next!= EOF){
+                next=getc(in_fp);
+                next == '\n'? lineCount++:lineCount;
+            }
+            getChar();
+            getNonComments();//chamada recursiva para verificar se a prox linha tem //
+        }
+        else{
+            ungetc(next,in_fp);
+        }
+    }
+}
+void keyWordToken(){
+    if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)
+        return fillToken("ACESS_MOD",ACESS_MOD);
+    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0||strcmp(lexema,"string")==0)
+        return fillToken("VAR_TYPE",VAR_TYPE);
+    if(strcmp(lexema,"static")==0)
+        return fillToken("STATIC_KW",STATIC_KW);
+    if(strcmp(lexema,"if")==0)
+        return fillToken("IF_STMT",IF_STMT);
+    if(strcmp(lexema,"while")==0)
+        return fillToken("WHILE_STMT",WHILE_STMT);
+    if(strcmp(lexema,"for")==0)
+        return fillToken("FOR_STMT",FOR_STMT);
+    if(strcmp(lexema,"else")==0)
+        return fillToken("ELSE_STMT",ELSE_STMT);
 }
 int lookup(int ch){ //responsavel por identificar o token
     switch (ch)
     {
     case '(':
         addAndGetNextChar();
-        nextToken = LEFT_PAREN;
+        fillToken("LEFT_PAREN",LEFT_PAREN);
         break;
     case ')':
         addAndGetNextChar();
-        nextToken = RIGHT_PAREN;
+        fillToken("RIGHT_PAREN",RIGHT_PAREN);
         break;
     case '+':
         addAndGetNextChar();
-        nextToken = SUM_OP;
+        fillToken("SUM_OP",SUM_OP);
         break;
     case '*':
         addAndGetNextChar();
-        nextToken = MULTIPLY_OP;
+        fillToken("MULTIPLY_OP",MULTIPLY_OP);
         break;
     case '=':
         addAndGetNextChar();
-        nextToken = ASSIGN_OP;
+        fillToken("ASSIGN_OP",ASSIGN_OP);
         break;
     case '-':
         addAndGetNextChar();
-        nextToken = SUB_OP;
+        fillToken("SUB_OP",SUB_OP);
         break;
     case '/':
         addAndGetNextChar();
-        nextToken = DIVIDE_OP;
+        fillToken("DIVIDE_OP",DIVIDE_OP);
         break;
     case ';':
         addAndGetNextChar();
-        nextToken = SEMICOLON;
+        fillToken("SEMICOLON",SEMICOLON);
         break;
     case ',':
         addAndGetNextChar();
-        nextToken = COMMA;
+        fillToken("COMMA",COMMA);
         break;
-    case '\n':
-        //lineCount++;
-        //getChar();
-        break;                   
+    case '"':
+        addAndGetNextChar();
+        fillToken("QUOT_MARK", QUOT_MARK);
+        break;
+    case '{':
+        addAndGetNextChar();
+        fillToken("BRACE_LEFT", BRACE_LEFT);
+        break;
+    case '}':
+        addAndGetNextChar();
+        fillToken("BRACE_RIGHT", BRACE_RIGHT);
+        break;
+    case '&':
+        char next= getc(in_fp);
+        if(next=='&'){
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+        }
+        addAndGetNextChar();
+        fillToken("LOGIC_OP", LOGIC_OP);
+        break;
+    case '|':
+        char next1= getc(in_fp);
+        if(next1=='|'){
+            ungetc(next1,in_fp);
+            addAndGetNextChar();
+        }
+        addAndGetNextChar();
+        fillToken("LOGIC_OP", LOGIC_OP);
+        break;                    
+    case EOF:
+        fillToken("EOF", EOF);
+        getChar();
+        break;
     default:
-        if(nextChar!=EOF)
-            nextToken = UNKNOW_TOKEN;
-        else    
-            nextToken = EOF;
+        if(ch=='<'||ch=='!'||ch=='>'||ch=='^'){
+            fillToken("LOGIC_OP",LOGIC_OP);
+        }
+        else
+            fillToken("UNKNOW_TOKEN", UNKNOW_TOKEN);   
         addAndGetNextChar();
         break;
     }
@@ -134,7 +205,7 @@ int lookup(int ch){ //responsavel por identificar o token
 int lex(){
     lex_lengh=0;
     getNonBlank();
-    //getNonComments();
+    getNonComments();
     switch (charClass)
     {
     case LETTER:
@@ -142,14 +213,14 @@ int lex(){
         while(charClass == LETTER || charClass == DIGIT){
             addAndGetNextChar();
         }
-        nextToken=IDENT;
+        fillToken("IDENT",IDENT);
         break;
     case DIGIT:
         addAndGetNextChar();
         while (charClass==DIGIT){
             addAndGetNextChar();
         }
-        nextToken = INT_LIT;
+        fillToken("INT_LIT",INT_LIT);
         break;
     case CONTROL:
         lineCount++;
@@ -159,19 +230,20 @@ int lex(){
         lookup(nextChar);
         break;   
     case EOF:
-        nextToken=EOF;
+        fillToken("EOF",EOF);
         lexema[0]='E';
         lexema[1]='O';
         lexema[2]='F';
         lexema[3]=0;
         break;
-    }if(nextToken == IDENT)
-        nextToken = keyWordToken();//verifica se o identificador da vez eh keyword
-    if(nextToken==UNKNOW_TOKEN)
+    }
+    if(nextTokenn.tokenType == IDENT)
+        keyWordToken();//verifica se o identificador da vez eh keyword
+    if(nextTokenn.tokenType==UNKNOW_TOKEN)
         printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else
-        printf("Proximo token: %d, Proximo lexema: %s\n",nextToken,lexema);
-    return nextToken;
+        printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
+    return nextTokenn.tokenType;
 }
 
 int main(){
@@ -183,7 +255,7 @@ int main(){
         getChar(); //bota o primeiro char no nextChar
         do{
             lex();
-        }while (nextToken!=EOF);
+        }while (nextTokenn.tokenType!=EOF);
     }
     return 0;
 }
