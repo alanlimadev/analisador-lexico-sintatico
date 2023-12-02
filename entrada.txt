@@ -1,4 +1,8 @@
-int x =  10;
+int x =  10, b = 20, c =30;
+if(a>b){
+
+}
+while();
 public static void Main(){
     
 }

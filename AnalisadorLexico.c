@@ -5,6 +5,7 @@
 
 #define LETTER 0 
 #define DIGIT 1
+#define CONTROL 98
 #define UNKNOWN 99
 
 //Definição dos Tokens
@@ -28,12 +29,14 @@
 #define LEFT_PAREN 25 
 #define RIGHT_PAREN 26
 #define STATIC_KW 27
+#define WHILE_STMT 28
 #define UNKNOW_TOKEN 29
 int charClass;
 char lexema[100];
 int lex_lengh=0;
 char nextChar;
 int nextToken;
+int lineCount=1;
 FILE *in_fp, *fopen();
 
 void getChar(){ //le o prox char e atualiza a sua classe
@@ -42,7 +45,10 @@ void getChar(){ //le o prox char e atualiza a sua classe
         if(isalpha(nextChar))
             charClass=LETTER;
         else if (isdigit(nextChar))
-            charClass = DIGIT;   
+            charClass = DIGIT;
+        else if (nextChar=='\n'){
+            charClass = CONTROL;
+        }
         else
             charClass = UNKNOWN;    
     else
@@ -61,15 +67,16 @@ void addAndGetNextChar(){
     getChar();
 }
 void getNonBlank(){ //ignorar espaços em branco
-    while(isspace(nextChar)){
+    while(isblank(nextChar)){
         getChar();
     } 
 }
 int keyWordToken(){
-    if(strcmp(lexema,"if")==0) return IF_STMT;
     if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)return ACESS_MOD;
     if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0)return VAR_TYPE;
     if(strcmp(lexema,"static")==0) return STATIC_KW;
+    if(strcmp(lexema,"if")==0) return IF_STMT;
+    if(strcmp(lexema,"while")==0) return WHILE_STMT;
     return IDENT;
 }
 int lookup(int ch){ //responsavel por identificar o token
@@ -110,7 +117,11 @@ int lookup(int ch){ //responsavel por identificar o token
     case ',':
         addAndGetNextChar();
         nextToken = COMMA;
-        break;               
+        break;
+    case '\n':
+        //lineCount++;
+        //getChar();
+        break;                   
     default:
         if(nextChar!=EOF)
             nextToken = UNKNOW_TOKEN;
@@ -140,6 +151,10 @@ int lex(){
         }
         nextToken = INT_LIT;
         break;
+    case CONTROL:
+        lineCount++;
+        getChar();
+        return 0;   
     case UNKNOWN:
         lookup(nextChar);
         break;   
@@ -153,7 +168,7 @@ int lex(){
     }if(nextToken == IDENT)
         nextToken = keyWordToken();//verifica se o identificador da vez eh keyword
     if(nextToken==UNKNOW_TOKEN)
-        printf("Lexema: %s nao reconhecido\n", lexema);
+        printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else
         printf("Proximo token: %d, Proximo lexema: %s\n",nextToken,lexema);
     return nextToken;
