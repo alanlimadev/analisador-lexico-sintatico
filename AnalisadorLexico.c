@@ -37,6 +37,8 @@ typedef struct Token{
 #define STATIC_KW 27
 #define WHILE_STMT 28
 #define QUOT_MARK 29
+#define BRACE_LEFT 30
+#define BRACE_RIGHT 31
 #define UNKNOW_TOKEN 404
 
 int charClass;
@@ -85,15 +87,31 @@ void getNonBlank(){ //ignorar espaços em branco
         getChar();
     } 
 }
+void getNonComments(){
+        if(nextChar=='/'){
+        char next =getc(in_fp);
+        if(next=='/'){
+            while(next!='\n' && next!= EOF){
+                next=getc(in_fp);
+                next == '\n'? lineCount++:lineCount;
+            }
+            getChar();
+            getNonComments();//chamada recursiva para verificar se a prox linha tem //
+        }
+        else{
+            ungetc(next,in_fp);
+        }
+    }
+}
 void keyWordToken(){
     if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)
         return fillToken("ACESS_MOD",ACESS_MOD);
-    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0)
+    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0||strcmp(lexema,"string")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
     if(strcmp(lexema,"static")==0)
         return fillToken("STATIC_KW",STATIC_KW);
     if(strcmp(lexema,"if")==0)
-        return fillToken("if",IF_STMT);
+        return fillToken("IF_STMT",IF_STMT);
     if(strcmp(lexema,"while")==0)
         return fillToken("WHILE_STMT",WHILE_STMT);
     if(strcmp(lexema,"for")==0)
@@ -143,23 +161,51 @@ int lookup(int ch){ //responsavel por identificar o token
     case '"':
         addAndGetNextChar();
         fillToken("QUOT_MARK", QUOT_MARK);
-        break;                           
+        break;
+    case '{':
+        addAndGetNextChar();
+        fillToken("BRACE_LEFT", BRACE_LEFT);
+        break;
+    case '}':
+        addAndGetNextChar();
+        fillToken("BRACE_RIGHT", BRACE_RIGHT);
+        break;
+    case '&':
+        char next= getc(in_fp);
+        if(next=='&'){
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+        }
+        addAndGetNextChar();
+        fillToken("LOGIC_OP", LOGIC_OP);
+        break;
+    case '|':
+        char next1= getc(in_fp);
+        if(next1=='|'){
+            ungetc(next1,in_fp);
+            addAndGetNextChar();
+        }
+        addAndGetNextChar();
+        fillToken("LOGIC_OP", LOGIC_OP);
+        break;                    
+    case EOF:
+        fillToken("EOF", EOF);
+        getChar();
+        break;
     default:
-        if(nextChar!=EOF)
-            fillToken("UNKNOW_TOKEN", UNKNOW_TOKEN);
-        else    
-            fillToken("EOF", EOF);
+        if(ch=='<'||ch=='!'||ch=='>'||ch=='^'){
+            fillToken("LOGIC_OP",LOGIC_OP);
+        }
+        else
+            fillToken("UNKNOW_TOKEN", UNKNOW_TOKEN);   
         addAndGetNextChar();
         break;
-    }
-    if(nextChar=='<'||nextChar=='!'||nextChar=='>'){
-        fillToken("LOGIC_OP",LOGIC_OP);
     }
 }
 int lex(){
     lex_lengh=0;
     getNonBlank();
-    //getNonComments();
+    getNonComments();
     switch (charClass)
     {
     case LETTER:
