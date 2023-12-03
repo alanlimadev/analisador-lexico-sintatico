@@ -10,11 +10,12 @@ Token* insert(Token* list, int tokenType,char* name){
     Token* newToken = (Token*)malloc(sizeof(Token));
     strcpy(newToken->name,name);
     newToken->tokenType=tokenType;
-    
+    newToken->prox=NULL;
+
     if(list==NULL){
-        newToken->prox=NULL;
         return newToken;
     }
+    
     Token* aux = list;
     while (aux->prox!=NULL){
         aux=aux->prox;
