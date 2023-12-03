@@ -22,20 +22,21 @@
 #define DIVIDE_OP 18
 #define COMMA 19
 #define LOGIC_OP 20
+#define COMPARE_OP 21
 
-#define FOR_STMT 21
-#define ELSE_STMT 22
-#define IF_STMT 23
+#define FOR_STMT 24
+#define ELSE_STMT 25
+#define IF_STMT 26
 
-#define ACESS_MOD 24
-#define LEFT_PAREN 25 
-#define RIGHT_PAREN 26
-#define STATIC_KW 27
-#define WHILE_STMT 28
-#define QUOT_MARK 29
-#define BRACE_LEFT 30
-#define BRACE_RIGHT 31
-#define UNKNOW_TOKEN 404
+#define ACESS_MOD 29
+#define LEFT_PAREN 30 
+#define RIGHT_PAREN 31
+#define STATIC_KW 32
+#define WHILE_STMT 33
+#define QUOT_MARK 34
+#define BRACE_LEFT 35
+#define BRACE_RIGHT 36
+#define UNKNOWN_TOKEN 404
 
 int charClass;
 char lexema[100];
@@ -90,7 +91,7 @@ void getNonComments(){
         if(next=='/'){
             while(next!='\n' && next!= EOF){
                 next=getc(in_fp);
-                next == '\n'? lineCount++:lineCount;
+                next == '\n'? lineCount++ : lineCount;
             }
             getChar();
             getNonComments();//chamada recursiva para verificar se a prox linha tem //
@@ -194,7 +195,7 @@ int lookup(int ch){ //responsavel por identificar o token
             fillToken("LOGIC_OP",LOGIC_OP);
         }
         else
-            fillToken("UNKNOW_TOKEN", UNKNOW_TOKEN);   
+            fillToken("UNKNOWN_TOKEN", UNKNOWN_TOKEN);   
         addAndGetNextChar();
         break;
     }
@@ -236,11 +237,11 @@ int lex(){
     }
     if(nextTokenn.tokenType == IDENT)
         keyWordToken();//verifica se o identificador da vez eh keyword    
-    if(nextTokenn.tokenType==UNKNOW_TOKEN)
+    if(nextTokenn.tokenType==UNKNOWN_TOKEN)
         printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else{
         //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
-        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name); //insere o token na lista
+        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount); //insere o token na lista
     }
     return nextTokenn.tokenType;
 }
