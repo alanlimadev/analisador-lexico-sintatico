@@ -1,8 +1,31 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include"TokenList.h"
+#include<string.h>
+#include "TokenList.h"
 
-Token* create(Token* list){
-    return (Token*)malloc(sizeof(Token));
+Token* create(){
+    return NULL;
 }
-
+Token* insert(Token* list, int tokenType,char* name){
+    Token* newToken = (Token*)malloc(sizeof(Token));
+    strcpy(newToken->name,name);
+    newToken->tokenType=tokenType;
+    
+    if(list==NULL){
+        newToken->prox=NULL;
+        return newToken;
+    }
+    Token* aux = list;
+    while (aux->prox!=NULL){
+        aux=aux->prox;
+    }
+    aux->prox=newToken;
+    return list;
+}
+void printList(Token* list){
+    Token* aux=list;
+    while(aux!=NULL){
+        printf("token: %s\n",aux->name);
+        aux=aux->prox;
+    }
+}

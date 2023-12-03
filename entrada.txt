@@ -1,11 +1,3 @@
-//taça papai
-//pula gaviao
-&& || A ^B
 public static void main(){
-    string paulo = "Valor";
-}
-while(A>B){
-    if(x < C){
-        peaga;
-    }
+    int x = 0;
 }
