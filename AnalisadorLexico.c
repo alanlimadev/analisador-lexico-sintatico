@@ -2,11 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<ctype.h>
-
-typedef struct Token{
-    int tokenType;
-    char name[30];
-}Token;
+#include "TokenList.h"
 
 #define LETTER 0 
 #define DIGIT 1
@@ -46,13 +42,14 @@ char lexema[100];
 int lex_lengh=0;
 char nextChar;
 int nextToken;
-Token nextTokenn;
+Token* nextTokenn;
 int lineCount=1;
 FILE *in_fp, *fopen();
 
 void fillToken(char* name, int tokenType){ //preencher strcut token
-    strcpy(nextTokenn.name,name);
-    nextTokenn.tokenType = tokenType;
+    strcpy(nextTokenn->name,name);
+    nextTokenn->tokenType = tokenType;
+    
 }
 
 void getChar(){ //le o prox char e atualiza a sua classe
@@ -237,13 +234,13 @@ int lex(){
         lexema[3]=0;
         break;
     }
-    if(nextTokenn.tokenType == IDENT)
+    if(nextTokenn->tokenType == IDENT)
         keyWordToken();//verifica se o identificador da vez eh keyword
-    if(nextTokenn.tokenType==UNKNOW_TOKEN)
+    if(nextTokenn->tokenType==UNKNOW_TOKEN)
         printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else
-        printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
-    return nextTokenn.tokenType;
+        printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn->name,nextTokenn->tokenType,lexema);
+    return nextTokenn->tokenType;
 }
 
 int main(){
@@ -252,10 +249,11 @@ int main(){
         printf("Erro ao abrir arquivo\n");
     }
     else{
+        nextTokenn = create(nextTokenn);
         getChar(); //bota o primeiro char no nextChar
         do{
             lex();
-        }while (nextTokenn.tokenType!=EOF);
+        }while (nextTokenn->tokenType!=EOF);
     }
     return 0;
 }
