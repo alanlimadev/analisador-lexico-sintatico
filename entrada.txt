@@ -1,5 +1,6 @@
 public static void main(){
-    int x = 0;
+    int x = 1.5849;
+    string str = "trabai vey doido";
 
     // comentario
 

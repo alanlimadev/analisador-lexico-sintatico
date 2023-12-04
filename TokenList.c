@@ -28,6 +28,7 @@ void printList(Token* list){
     Token* aux=list;
     while(aux!=NULL){
         printf("Linha %d) token: %s\n",aux->line, aux->name);
+        //printf("%d) ""%s"" (Tipo: %d)\n", aux->line, aux->name, aux->tokenType);
         aux=aux->prox;
     }
 }

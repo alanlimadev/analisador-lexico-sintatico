@@ -3,39 +3,42 @@
 #include<string.h>
 #include<ctype.h>
 #include "TokenList.h"
-//teste branch Paser
+
 #define LETTER 0 
 #define DIGIT 1
-#define CONTROL 98
+#define NEW_LINE 98
 #define UNKNOWN 99
 
 //Definição dos Tokens
 #define INT_LIT 10 
-#define IDENT 11
-#define VAR_TYPE 12
-#define SEMICOLON 13
+#define REAL_NUM 11
+#define IDENT 12
+#define VAR_TYPE 13
+#define SEMICOLON 14
+#define DOT 15
+
 //operadores
-#define ASSIGN_OP 14
-#define SUM_OP 15
-#define SUB_OP 16
-#define MULTIPLY_OP 17
-#define DIVIDE_OP 18
-#define COMMA 19
-#define LOGIC_OP 20
-#define COMPARE_OP 21
+#define ASSIGN_OP 17
+#define SUM_OP 18
+#define SUB_OP 19
+#define MULTIPLY_OP 20
+#define DIVIDE_OP 21
+#define COMMA 22
+#define LOGIC_OP 23
+#define COMPARE_OP 24
 
-#define FOR_STMT 24
-#define ELSE_STMT 25
-#define IF_STMT 26
+#define FOR_STMT 27
+#define ELSE_STMT 28
+#define IF_STMT 29
 
-#define ACESS_MOD 29
-#define LEFT_PAREN 30 
-#define RIGHT_PAREN 31
-#define STATIC_KW 32
-#define WHILE_STMT 33
-#define QUOT_MARK 34
-#define BRACE_LEFT 35
-#define BRACE_RIGHT 36
+#define ACESS_MOD 32
+#define LEFT_PAREN 33
+#define RIGHT_PAREN 34
+#define STATIC_KW 35
+#define WHILE_STMT 36
+#define QUOT_MARK 37
+#define BRACE_LEFT 38
+#define BRACE_RIGHT 39
 #define UNKNOWN_TOKEN 404
 
 int charClass;
@@ -61,7 +64,7 @@ void getChar(){ //le o prox char e atualiza a sua classe
         else if (isdigit(nextChar))
             charClass = DIGIT;
         else if (nextChar=='\n'){
-            charClass = CONTROL;
+            charClass = NEW_LINE;
         }
         else
             charClass = UNKNOWN;    
@@ -156,6 +159,10 @@ int lookup(int ch){ //responsavel por identificar o token
         addAndGetNextChar();
         fillToken("COMMA",COMMA);
         break;
+    case '.':
+        addAndGetNextChar();
+        fillToken("DOT",DOT);
+        break;
     case '"':
         addAndGetNextChar();
         fillToken("QUOT_MARK", QUOT_MARK);
@@ -220,7 +227,7 @@ int lex(){
         }
         fillToken("INT_LIT",INT_LIT);
         break;
-    case CONTROL:
+    case NEW_LINE:
         lineCount++;
         getChar();
         return 0;   
