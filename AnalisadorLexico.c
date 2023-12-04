@@ -6,36 +6,40 @@
 
 #define LETTER 0 
 #define DIGIT 1
-#define CONTROL 98
+#define NEW_LINE 98
 #define UNKNOWN 99
 
 //Definição dos Tokens
 #define INT_LIT 10 
-#define IDENT 11
-#define VAR_TYPE 12
-#define SEMICOLON 13
+#define REAL_NUM 11
+#define IDENT 12
+#define VAR_TYPE 13
+#define SEMICOLON 14
+#define DOT 15
+
 //operadores
-#define ASSIGN_OP 14
-#define SUM_OP 15
-#define SUB_OP 16
-#define MULTIPLY_OP 17
-#define DIVIDE_OP 18
-#define COMMA 19
-#define LOGIC_OP 20
+#define ASSIGN_OP 17
+#define SUM_OP 18
+#define SUB_OP 19
+#define MULTIPLY_OP 20
+#define DIVIDE_OP 21
+#define COMMA 22
+#define LOGIC_OP 23
+#define COMPARE_OP 24
 
-#define FOR_STMT 21
-#define ELSE_STMT 22
-#define IF_STMT 23
+#define FOR_STMT 27
+#define ELSE_STMT 28
+#define IF_STMT 29
 
-#define ACESS_MOD 24
-#define LEFT_PAREN 25 
-#define RIGHT_PAREN 26
-#define STATIC_KW 27
-#define WHILE_STMT 28
-#define QUOT_MARK 29
-#define BRACE_LEFT 30
-#define BRACE_RIGHT 31
-#define UNKNOW_TOKEN 404
+#define ACESS_MOD 32
+#define LEFT_PAREN 33
+#define RIGHT_PAREN 34
+#define STATIC_KW 35
+#define WHILE_STMT 36
+#define QUOT_MARK 37
+#define BRACE_LEFT 38
+#define BRACE_RIGHT 39
+#define UNKNOWN_TOKEN 404
 
 int charClass;
 char lexema[100];
@@ -60,7 +64,7 @@ void getChar(){ //le o prox char e atualiza a sua classe
         else if (isdigit(nextChar))
             charClass = DIGIT;
         else if (nextChar=='\n'){
-            charClass = CONTROL;
+            charClass = NEW_LINE;
         }
         else
             charClass = UNKNOWN;    
@@ -90,7 +94,7 @@ void getNonComments(){
         if(next=='/'){
             while(next!='\n' && next!= EOF){
                 next=getc(in_fp);
-                next == '\n'? lineCount++:lineCount;
+                next == '\n'? lineCount++ : lineCount;
             }
             getChar();
             getNonComments();//chamada recursiva para verificar se a prox linha tem //
@@ -155,6 +159,10 @@ int lookup(int ch){ //responsavel por identificar o token
         addAndGetNextChar();
         fillToken("COMMA",COMMA);
         break;
+    case '.':
+        addAndGetNextChar();
+        fillToken("DOT",DOT);
+        break;
     case '"':
         addAndGetNextChar();
         fillToken("QUOT_MARK", QUOT_MARK);
@@ -194,7 +202,7 @@ int lookup(int ch){ //responsavel por identificar o token
             fillToken("LOGIC_OP",LOGIC_OP);
         }
         else
-            fillToken("UNKNOW_TOKEN", UNKNOW_TOKEN);   
+            fillToken("UNKNOWN_TOKEN", UNKNOWN_TOKEN);   
         addAndGetNextChar();
         break;
     }
@@ -219,7 +227,7 @@ int lex(){
         }
         fillToken("INT_LIT",INT_LIT);
         break;
-    case CONTROL:
+    case NEW_LINE:
         lineCount++;
         getChar();
         return 0;   
@@ -236,11 +244,11 @@ int lex(){
     }
     if(nextTokenn.tokenType == IDENT)
         keyWordToken();//verifica se o identificador da vez eh keyword    
-    if(nextTokenn.tokenType==UNKNOW_TOKEN)
+    if(nextTokenn.tokenType==UNKNOWN_TOKEN)
         printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
     else{
         //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
-        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name); //insere o token na lista
+        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount); //insere o token na lista
     }
     return nextTokenn.tokenType;
 }
