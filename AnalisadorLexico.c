@@ -3,43 +3,8 @@
 #include<string.h>
 #include<ctype.h>
 #include "TokenList.h"
+#include"Parser.h"
 
-#define LETTER 0 
-#define DIGIT 1
-#define NEW_LINE 98
-#define UNKNOWN 99
-
-//Definição dos Tokens
-#define INT_LIT 10 
-#define REAL_NUM 11
-#define IDENT 12
-#define VAR_TYPE 13
-#define SEMICOLON 14
-#define DOT 15
-
-//operadores
-#define ASSIGN_OP 17
-#define SUM_OP 18
-#define SUB_OP 19
-#define MULTIPLY_OP 20
-#define DIVIDE_OP 21
-#define COMMA 22
-#define LOGIC_OP 23
-#define COMPARE_OP 24
-
-#define FOR_STMT 27
-#define ELSE_STMT 28
-#define IF_STMT 29
-
-#define ACESS_MOD 32
-#define LEFT_PAREN 33
-#define RIGHT_PAREN 34
-#define STATIC_KW 35
-#define WHILE_STMT 36
-#define QUOT_MARK 37
-#define BRACE_LEFT 38
-#define BRACE_RIGHT 39
-#define UNKNOWN_TOKEN 404
 
 int charClass;
 char lexema[100];
@@ -266,5 +231,8 @@ int main(){
         }while (nextTokenn.tokenType!=EOF);
         printList(tokenList);
     }
+    
+    parserFunction(tokenList);
+
     return 0;
 }
