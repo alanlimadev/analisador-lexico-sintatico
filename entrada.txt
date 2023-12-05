@@ -1,4 +1,1 @@
-int x = 17;
-x = 22; //22ehbolsonaro
-string abc, def, ghi, jkl;
-string str=1, str1=1, ;
+int x=1,y=1,z=1;

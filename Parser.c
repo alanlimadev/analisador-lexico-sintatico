@@ -5,70 +5,106 @@
 #include<string.h>
 #include<ctype.h>
 
+#define LETTER 0 
+#define DIGIT 1
+#define NEW_LINE 98
+#define UNKNOWN 99
+
+//Definição dos Tokens
+#define INT_LIT 10 
+#define REAL_NUM 11
+#define IDENT 12
+#define VAR_TYPE 13
+#define SEMICOLON 14
+#define DOT 15
+
+//operadores
+#define ASSIGN_OP 17
+#define SUM_OP 18
+#define SUB_OP 19
+#define MULTIPLY_OP 20
+#define DIVIDE_OP 21
+#define COMMA 22
+#define LOGIC_OP 23
+#define COMPARE_OP 24
+
+#define FOR_STMT 27
+#define ELSE_STMT 28
+#define IF_STMT 29
+
+#define ACESS_MOD 32
+#define LEFT_PAREN 33
+#define RIGHT_PAREN 34
+#define STATIC_KW 35
+#define WHILE_STMT 36
+#define QUOT_MARK 37
+#define BRACE_LEFT 38
+#define BRACE_RIGHT 39
+#define UNKNOWN_TOKEN 404
+
 void statement();
 void error(char* errorMsg);
 void variable_declaration();
 void variable_assingment();
 
 int listIndex=0;
-Token* addrCurrentToken;
+Token* CurrentToken;
 Token* addrLastToken=NULL;
-int currTokenType=99;
+//int CurrentToken->tokenType=99;
 
 void error(char* errorMsg){
-    printf("ERRO! %s na linha %d", errorMsg, addrCurrentToken->line);
+    printf("ERRO! %s na linha %d", errorMsg, CurrentToken->line);
     exit(1);
 }
 
 void getNextToken(){ //avanca para o proximo token de Tokens
-    addrLastToken=addrCurrentToken;
-    addrCurrentToken = addrCurrentToken->prox;
-    currTokenType=addrCurrentToken->tokenType;
+    addrLastToken=CurrentToken;
+    CurrentToken = CurrentToken->prox;
+    CurrentToken->tokenType=CurrentToken->tokenType;
 }
 
 int peekNextToken(){ //ESPIA e retorna o proximo token de Tokens (nao altera nenhua outra variavel global)
-    return addrCurrentToken->prox->tokenType;
+    return CurrentToken->prox->tokenType;
 }
 
 void ungetNextToken(){ //volta (APENAS 1 NO MAXIMO) para o token antecessor do token atual
     if(addrLastToken==NULL)
         exit(404);
-    addrCurrentToken=addrLastToken;
+    CurrentToken=addrLastToken;
     addrLastToken=NULL;
-    currTokenType=addrCurrentToken->tokenType;
+    CurrentToken->tokenType=CurrentToken->tokenType;
 }
 
 void parserFunction(Token* tokenList){ //unica funcao presente em Parser.h, apenas ela eh chamada na main de AnalisadorLexico.c
-    addrCurrentToken = tokenList;
-    currTokenType=addrCurrentToken->tokenType;
+    CurrentToken = tokenList;
+    //CurrentToken->tokenType=CurrentToken->tokenType;
     statement();
 }
 
 void statement(){ //aqui a brincadeira comeca
     printf("Enter <statement>\n");
-    if(currTokenType==VAR_TYPE){
+    if(CurrentToken->tokenType==VAR_TYPE){
         variable_declaration();
-    } else if(currTokenType==IDENT){
+    } else if(CurrentToken->tokenType==IDENT){
         variable_assingment();
     } else {
         error("Declaracao de variavel invalida");
     }
 
-    //printf("NOME: %s || TIPO: %d\n", addrCurrentToken->name, addrCurrentToken->tokenType);
-    getNextToken();
-    if(currTokenType!=SEMICOLON)
-        error("Insira ';' ao final da linha");
+    printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
+    
+    if(CurrentToken->tokenType==SEMICOLON)
+        printf("Leaving <statement>\n");
+    else error("Expected ';' in the end of line");
     
     getNextToken();
-    if(currTokenType!=EOF)
+    if(CurrentToken->tokenType!=EOF)
         statement();
-
-    printf("Leaving <statement>\n");
 }
 
 void variable_declaration(){
     printf("Enter <variable_declaration>\n");
-    if(currTokenType==VAR_TYPE){
+    if(CurrentToken->tokenType==VAR_TYPE){
         variable_list();
     } else error("erro no <variable_declaration>");
     printf("Leaving <variable_declaration>\n");
@@ -76,47 +112,46 @@ void variable_declaration(){
 //int a, b, c;
 //int a=5, b=7, c=9;
 void variable_list(){
+    printf("enter <variable_list>\n");
+    int isList= 0; //assume que nao teremos uma var_list
     getNextToken();
-    if(currTokenType==IDENT){
-
-        if(peekNextToken()==COMMA){
-            while (peekNextToken()==COMMA) {
+    if(CurrentToken->tokenType==IDENT){
+        getNextToken();
+        while(CurrentToken->tokenType == COMMA || CurrentToken->tokenType == IDENT){
+            getNextToken();
+            isList=1;
+        }
+        if(isList==0&&CurrentToken->tokenType==ASSIGN_OP){
+            variable_assingment();
+            while(CurrentToken->tokenType==COMMA||CurrentToken->tokenType==IDENT||CurrentToken->tokenType==ASSIGN_OP){
                 getNextToken();
-                if(peekNextToken()==IDENT){
-                    getNextToken();
-                } else {
-                    error("Siga o formato correto para declarar multiplas variaveis na mesma linha");
+                if(CurrentToken->tokenType==ASSIGN_OP){
+                    variable_assingment();
+                }
+                else if(CurrentToken->tokenType==SEMICOLON){
+                    break;
                 }
             }
+        }
+        if(CurrentToken->tokenType==ASSIGN_OP && isList==1){
+            error("not allowed ");
+        } 
+    }
+    printf("leaving <variable_list>\n");
+} 
+        
 
-        } else if(peekNextToken()==ASSIGN_OP){
-            variable_assingment();
-            while(peekNextToken()==COMMA){
-                getNextToken(); //passa o token para o da virgula
-                getNextToken(); //passa o token para o do identificador (se estiver tudo escrito corretamente)
-                variable_assingment();
-            }
-            
-        } else error("Siga o formato correto para declarar e inicializar multiplas variaveis na mesma linha");
-
-    } else error("Declaracao de variavel incorreta (forma correta: {tipo} {nomeVar})");
-
-
-}
 
 void variable_assingment(){
     printf("Enter <variable_assingment>\n");
-    if(currTokenType==IDENT){
-        getNextToken();
-        if(currTokenType==ASSIGN_OP){
+        if(CurrentToken->tokenType==ASSIGN_OP){
             getNextToken();
-            if(!(currTokenType==IDENT || currTokenType==INT_LIT)){
+            if(!(CurrentToken->tokenType==IDENT || CurrentToken->tokenType==INT_LIT)){
                 error("expressao do lado direito da atribuicao invalida");
             }
         } else {
             error("sinal de recebe '=' faltando");
         }
-    } else error("Era esperado um Nome de Variavel (identificador faltando)");
-
+        getNextToken();
     printf("Leaving <variable_assingment>\n");
 }
