@@ -3,6 +3,7 @@
 #include<string.h>
 #include<ctype.h>
 #include "TokenList.h"
+#include"Parser.h"
 
 #define LETTER 0 
 #define DIGIT 1
@@ -266,5 +267,8 @@ int main(){
         }while (nextTokenn.tokenType!=EOF);
         printList(tokenList);
     }
+    
+    parserFunction(tokenList);
+
     return 0;
 }

@@ -1,11 +1,4 @@
-public static void main(){
-    int x = 1.5849;
-    string str = "trabai vey doido";
-
-    // comentario
-
-    if(a==0 && true || false){
-
-    }
-
-}
+int x = 17;
+x = 22; //22ehbolsonaro
+string abc, def, ghi, jkl;
+string str=1, str1=1, ;

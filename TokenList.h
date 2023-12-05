@@ -1,3 +1,5 @@
+#pragma once
+
 typedef struct token Token;
 struct token{int tokenType;char name[30];Token* prox;int line;};
 Token* create();
