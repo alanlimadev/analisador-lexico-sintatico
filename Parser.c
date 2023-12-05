@@ -117,10 +117,15 @@ void variable_list(){
     getNextToken();
     if(CurrentToken->tokenType==IDENT){
         getNextToken();
-        while(CurrentToken->tokenType == COMMA || CurrentToken->tokenType == IDENT){
+        while(CurrentToken->tokenType == COMMA){
             getNextToken();
             isList=1;
+            if(CurrentToken->tokenType!=IDENT) 
+                error("expected a identifier after ','");
+            else
+                getNextToken();    
         }
+
         if(isList==0&&CurrentToken->tokenType==ASSIGN_OP){
             variable_assingment();
             while(CurrentToken->tokenType==COMMA||CurrentToken->tokenType==IDENT||CurrentToken->tokenType==ASSIGN_OP){
