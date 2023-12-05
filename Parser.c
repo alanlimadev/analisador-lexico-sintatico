@@ -146,7 +146,7 @@ void variable_list(){
                 }
                 else error("expected a identifier after ','");
             }
-        }      
+        }
         if(CurrentToken->tokenType==ASSIGN_OP && isList==1){ //tentativa de a,b,c=2;
             error("expected a '='");
         }
