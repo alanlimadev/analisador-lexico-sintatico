@@ -117,32 +117,38 @@ void variable_list(){
     getNextToken();
     if(CurrentToken->tokenType==IDENT){
         getNextToken();
-        while(CurrentToken->tokenType == COMMA){
-            getNextToken();
-            isList=1;
-            if(CurrentToken->tokenType!=IDENT) 
-                error("expected a identifier after ','");
-            else
-                getNextToken();    
-        }
-
-        if(isList==0&&CurrentToken->tokenType==ASSIGN_OP){
-            variable_assingment();
-            while(CurrentToken->tokenType==COMMA||CurrentToken->tokenType==IDENT||CurrentToken->tokenType==ASSIGN_OP){
+        if(CurrentToken->tokenType==SEMICOLON); //int x;
+        
+        else if(CurrentToken->tokenType == COMMA){ //int x,a,b,c;
+            while(CurrentToken->tokenType == COMMA){
                 getNextToken();
-                if(CurrentToken->tokenType==ASSIGN_OP){
+                isList=1;
+                if(CurrentToken->tokenType!=IDENT) 
+                    error("expected a identifier after ','");
+                else
+                    getNextToken();
+            }         
+        }
+        else if(isList==0){ // int x = 1
+            variable_assingment();
+            while(CurrentToken->tokenType==COMMA){ //int x=1,a=2;
+                getNextToken();
+                if(CurrentToken->tokenType==IDENT){
+                    getNextToken();
                     variable_assingment();
                 }
                 else if(CurrentToken->tokenType==SEMICOLON){
                     break;
                 }
+                else error("expected a identifier after ','");
             }
+        }      
+        if(CurrentToken->tokenType==ASSIGN_OP && isList==1){ //tentativa de a,b,c=2;
+            error("expected a '=' you cant initialize just one variable");
         }
-        if(CurrentToken->tokenType==ASSIGN_OP && isList==1){
-            error("not allowed ");
-        } 
-    }
     printf("leaving <variable_list>\n");
+    }
+    else error("expected a identifier");
 } 
         
 
