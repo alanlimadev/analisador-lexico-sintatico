@@ -46,6 +46,7 @@ void statement();
 void error(char* errorMsg);
 void variable_declaration();
 void variable_assingment();
+void variable_list();
 
 int listIndex=0;
 Token* CurrentToken;
@@ -161,7 +162,7 @@ void variable_assingment(){
                 error("expressao do lado direito da atribuicao invalida");
             }
         } else {
-            error("sinal de recebe '=' faltando");
+            error("expected a '=' ");
         }
         getNextToken();
     printf("Leaving <variable_assingment>\n");
