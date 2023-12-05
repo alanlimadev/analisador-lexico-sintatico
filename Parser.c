@@ -47,6 +47,9 @@ void error(char* errorMsg);
 void variable_declaration();
 void variable_assingment();
 void variable_list();
+void expression();
+void term();
+void factor();
 
 int listIndex=0;
 Token* CurrentToken;
@@ -145,25 +148,57 @@ void variable_list(){
             }
         }      
         if(CurrentToken->tokenType==ASSIGN_OP && isList==1){ //tentativa de a,b,c=2;
-            error("expected a '=' you cant initialize just one variable");
+            error("expected a '='");
         }
     printf("leaving <variable_list>\n");
     }
     else error("expected a identifier");
 } 
         
-
-
 void variable_assingment(){
     printf("Enter <variable_assingment>\n");
         if(CurrentToken->tokenType==ASSIGN_OP){
             getNextToken();
-            if(!(CurrentToken->tokenType==IDENT || CurrentToken->tokenType==INT_LIT)){
-                error("expressao do lado direito da atribuicao invalida");
-            }
+            
+            expression();
         } else {
             error("expected a '=' ");
         }
-        getNextToken();
+        //getNextToken();
     printf("Leaving <variable_assingment>\n");
+}
+void expression(){
+    printf("enter <expression>\n");
+    term();
+    while(CurrentToken->tokenType==SUM_OP||CurrentToken->tokenType==SUB_OP){
+        getNextToken();
+        term();
+    }
+    printf("leaving <expression>\n");
+}
+void term(){
+    printf("enter <term>\n");
+    factor();
+    while(CurrentToken->tokenType==MULTIPLY_OP||CurrentToken->tokenType==DIVIDE_OP){
+        getNextToken();
+        factor();
+    }
+    printf("leaving <term>\n");
+}
+void factor(){
+    printf("enter <factor\n");
+    if(CurrentToken->tokenType==IDENT || CurrentToken->tokenType==INT_LIT)
+        getNextToken();
+    else if(CurrentToken->tokenType==LEFT_PAREN){
+        getNextToken();
+        expression();
+        if(CurrentToken->tokenType==RIGHT_PAREN){
+            getNextToken();
+        }
+        else
+            error("expected a ')'");
+    }
+    else error("right value not recognized");    
+          
+    printf("leaving <factor>\n");
 }
