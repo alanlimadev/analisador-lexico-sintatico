@@ -133,28 +133,28 @@ void identifier(){
 void variable_list(){  //<identifier> 
     printf("enter <variable_list>\n");
     int houveInit = 0; //assume que nao teremos uma init
-    int proxInit =0; // proxima int
     
     identifier();
     
     if(CurrentToken->tokenType==ASSIGN_OP){
         variable_assingment();
         houveInit = 1;
-        //proxInit=1;
     }
-    while(CurrentToken->tokenType==COMMA){
-        getNextToken(); //consome ,
-        identifier(); //consome identifier
-        proxInit=0;
-        if(CurrentToken->tokenType == ASSIGN_OP){
-            variable_assingment();
-            proxInit=1;
-        }    
+    while(CurrentToken->tokenType==COMMA){ //identifier; identifier =;
+            getNextToken();//consome ,
+            identifier();
+            if(houveInit){ //se houver uma inicializacao, todas as outras dps da , devem ser inicializacao
+                variable_assingment();
+            }
+            else{ //senao eh errado
+                if(CurrentToken->tokenType!=SEMICOLON&&CurrentToken->tokenType!=COMMA)
+                    error("invalid expression");
+            }
+                   
     }
-    if(houveInit!=proxInit){
-        printf("Error: Inconsistent initialization in the variable list.\n");
-            error("aa");
-    }
+    if(CurrentToken->tokenType!=SEMICOLON)
+        if(houveInit) error("expected a ="); //se houve inicializacao de var, o final dela obrigado ter o ; senao devia ter uma =
+
     printf("leaving <variable_list>\n");
 }
 

@@ -1,2 +1,8 @@
-int x = oi, z = 2;
+//Testes Realizados, os erros estão sendo apontados(alguns com msg genericas) mas nesse exemplo, na linha 5 ele nao aponta a linha correta pois ele pulou para o tokenseguinte que esta na linha 6
+int x;
 int x,y,z;
+int x=1;
+int x=1, i
+int x = a;
+int x = 1, x = 2;
+int a;
