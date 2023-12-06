@@ -45,7 +45,8 @@
 void statement();
 void error(char* errorMsg);
 void variable_declaration();
-void variable_assingment();
+void value_attribuition();
+void assingment();
 void type();
 void variable_list();
 void expression();
@@ -91,8 +92,12 @@ void statement(){ //aqui a brincadeira comeca
     if(CurrentToken->tokenType==VAR_TYPE){
         variable_declaration();
     } else if(CurrentToken->tokenType==IDENT){
-        
-        variable_assingment();
+        value_attribuition();
+        while(CurrentToken->tokenType==COMMA){
+            getNextToken(); //consome ,
+            value_attribuition();
+        }
+            
     } else {
         error("Declaracao de variavel invalida");
     }
@@ -113,6 +118,12 @@ void variable_declaration(){
         type();
         variable_list();
     printf("Leaving <variable_declaration>\n");
+}
+void value_attribuition(){
+    printf("enter <value_attribuition>\n");
+    identifier();
+    assingment();
+    printf("leave <value_attribuition>\n");
 }
 void type(){
     printf("Enter type\n");
@@ -137,14 +148,14 @@ void variable_list(){  //<identifier>
     identifier();
     
     if(CurrentToken->tokenType==ASSIGN_OP){
-        variable_assingment();
+        assingment();
         houveInit = 1;
     }
     while(CurrentToken->tokenType==COMMA){ //identifier; identifier =;
             getNextToken();//consome ,
             identifier();
             if(houveInit){ //se houver uma inicializacao, todas as outras dps da , devem ser inicializacao
-                variable_assingment();
+                assingment();
             }
             else{ //senao eh errado
                 if(CurrentToken->tokenType!=SEMICOLON&&CurrentToken->tokenType!=COMMA)
@@ -158,8 +169,8 @@ void variable_list(){  //<identifier>
     printf("leaving <variable_list>\n");
 }
 
-void variable_assingment(){
-    printf("Enter <variable_assingment>\n");
+void assingment(){
+    printf("Enter <assingment>\n");
         if(CurrentToken->tokenType==ASSIGN_OP){
             getNextToken(); //consome =
             expression();
@@ -167,7 +178,7 @@ void variable_assingment(){
         else {
             error("expected a '=' ");
         }
-    printf("Leaving <variable_assingment>\n");
+    printf("Leaving <assingment>\n");
 }
 void expression(){
     printf("enter <expression>\n");
