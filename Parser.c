@@ -162,7 +162,7 @@ void variable_list(){  //<identifier>
 void variable_assingment(){
     printf("Enter <variable_assingment>\n");
         if(CurrentToken->tokenType==ASSIGN_OP){
-            getNextToken(); //consome ==
+            getNextToken(); //consome =
             expression();
         }
         else {
