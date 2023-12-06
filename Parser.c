@@ -116,16 +116,16 @@ void variable_declaration(){
 }
 void type(){
     printf("Enter type\n");
-    getNextToken();
-    if(!CurrentToken->tokenType==VAR_TYPE)
+    if(CurrentToken->tokenType!=VAR_TYPE)
         error("expected a vartype");
+    getNextToken();        
     printf("leave type\n");    
 }
 void identifier(){
     printf("Enter identifier\n");
-    getNextToken();
-    if(!CurrentToken->tokenType==IDENT)
+    if(CurrentToken->tokenType!=IDENT)
         error("expected a identifier");
+    getNextToken();
     printf("leave identifier\n");
 }
 //int a, b, c;
@@ -140,22 +140,21 @@ void variable_list(){  //<identifier>
     if(CurrentToken->tokenType==ASSIGN_OP){
         variable_assingment();
         houveInit = 1;
+        //proxInit=1;
     }
     while(CurrentToken->tokenType==COMMA){
         getNextToken(); //consome ,
         identifier(); //consome identifier
+        proxInit=0;
         if(CurrentToken->tokenType == ASSIGN_OP){
             variable_assingment();
             proxInit=1;
         }    
     }
-    if(houveInit!=proxInit){ //se teve inicializacao e a proxima n inicializou = erro!
-        error("Error expected a variable initialization ");
+    if(houveInit!=proxInit){
+        printf("Error: Inconsistent initialization in the variable list.\n");
+            error("aa");
     }
-
-    if(CurrentToken->tokenType!=SEMICOLON) //se n terminar com ; eh erro
-        error("expected a '='");
-           
     printf("leaving <variable_list>\n");
 }
 
