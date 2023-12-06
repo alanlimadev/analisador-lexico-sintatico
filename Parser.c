@@ -46,6 +46,7 @@ void statement();
 void error(char* errorMsg);
 void variable_declaration();
 void variable_assingment();
+void type();
 void variable_list();
 void expression();
 void term();
@@ -90,6 +91,7 @@ void statement(){ //aqui a brincadeira comeca
     if(CurrentToken->tokenType==VAR_TYPE){
         variable_declaration();
     } else if(CurrentToken->tokenType==IDENT){
+        
         variable_assingment();
     } else {
         error("Declaracao de variavel invalida");
@@ -108,63 +110,64 @@ void statement(){ //aqui a brincadeira comeca
 
 void variable_declaration(){
     printf("Enter <variable_declaration>\n");
-    if(CurrentToken->tokenType==VAR_TYPE){
+        type();
         variable_list();
-    } else error("erro no <variable_declaration>");
     printf("Leaving <variable_declaration>\n");
+}
+void type(){
+    printf("Enter type\n");
+    getNextToken();
+    if(!CurrentToken->tokenType==VAR_TYPE)
+        error("expected a vartype");
+    printf("leave type\n");    
+}
+void identifier(){
+    printf("Enter identifier\n");
+    getNextToken();
+    if(!CurrentToken->tokenType==IDENT)
+        error("expected a identifier");
+    printf("leave identifier\n");
 }
 //int a, b, c;
 //int a=5, b=7, c=9;
-void variable_list(){
+void variable_list(){  //<identifier> 
     printf("enter <variable_list>\n");
-    int isList= 0; //assume que nao teremos uma var_list
-    getNextToken();
-    if(CurrentToken->tokenType==IDENT){
-        getNextToken();
-        if(CurrentToken->tokenType==SEMICOLON); //int x;
-        
-        else if(CurrentToken->tokenType == COMMA){ //int x,a,b,c;
-            while(CurrentToken->tokenType == COMMA){
-                getNextToken();
-                isList=1;
-                if(CurrentToken->tokenType!=IDENT) 
-                    error("expected a identifier after ','");
-                else
-                    getNextToken();
-            }         
-        }
-        else if(isList==0){ // int x = 1
-            variable_assingment();
-            while(CurrentToken->tokenType==COMMA){ //int x=1,a=2;
-                getNextToken();
-                if(CurrentToken->tokenType==IDENT){
-                    getNextToken();
-                    variable_assingment();
-                }
-                else if(CurrentToken->tokenType==SEMICOLON){
-                    break;
-                }
-                else error("expected a identifier after ','");
-            }
-        }
-        if(CurrentToken->tokenType==ASSIGN_OP && isList==1){ //tentativa de a,b,c=2;
-            error("expected a '='");
-        }
-    printf("leaving <variable_list>\n");
+    int houveInit = 0; //assume que nao teremos uma init
+    int proxInit =0; // proxima int
+    
+    identifier();
+    
+    if(CurrentToken->tokenType==ASSIGN_OP){
+        variable_assingment();
+        houveInit = 1;
     }
-    else error("expected a identifier");
-} 
-        
+    while(CurrentToken->tokenType==COMMA){
+        getNextToken(); //consome ,
+        identifier(); //consome identifier
+        if(CurrentToken->tokenType == ASSIGN_OP){
+            variable_assingment();
+            proxInit=1;
+        }    
+    }
+    if(houveInit!=proxInit){ //se teve inicializacao e a proxima n inicializou = erro!
+        error("Error expected a variable initialization ");
+    }
+
+    if(CurrentToken->tokenType!=SEMICOLON) //se n terminar com ; eh erro
+        error("expected a '='");
+           
+    printf("leaving <variable_list>\n");
+}
+
 void variable_assingment(){
     printf("Enter <variable_assingment>\n");
         if(CurrentToken->tokenType==ASSIGN_OP){
-            getNextToken();
-            
+            getNextToken(); //consome ==
             expression();
-        } else {
+        }
+        else {
             error("expected a '=' ");
         }
-        //getNextToken();
     printf("Leaving <variable_assingment>\n");
 }
 void expression(){

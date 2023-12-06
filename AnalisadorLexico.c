@@ -72,7 +72,7 @@ void getNonComments(){
 void keyWordToken(){
     if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)
         return fillToken("ACESS_MOD",ACESS_MOD);
-    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"void")==0||strcmp(lexema,"string")==0)
+    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0||strcmp(lexema,"string")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
     if(strcmp(lexema,"static")==0)
         return fillToken("STATIC_KW",STATIC_KW);
