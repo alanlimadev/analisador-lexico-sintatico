@@ -5,43 +5,6 @@
 #include<string.h>
 #include<ctype.h>
 
-#define LETTER 0 
-#define DIGIT 1
-#define NEW_LINE 98
-#define UNKNOWN 99
-
-//Definição dos Tokens
-#define INT_LIT 10 
-#define REAL_NUM 11
-#define IDENT 12
-#define VAR_TYPE 13
-#define SEMICOLON 14
-#define DOT 15
-
-//operadores
-#define ASSIGN_OP 17
-#define SUM_OP 18
-#define SUB_OP 19
-#define MULTIPLY_OP 20
-#define DIVIDE_OP 21
-#define COMMA 22
-#define LOGIC_OP 23
-#define COMPARE_OP 24
-
-#define FOR_STMT 27
-#define ELSE_STMT 28
-#define IF_STMT 29
-
-#define ACESS_MOD 32
-#define LEFT_PAREN 33
-#define RIGHT_PAREN 34
-#define STATIC_KW 35
-#define WHILE_STMT 36
-#define QUOT_MARK 37
-#define BRACE_LEFT 38
-#define BRACE_RIGHT 39
-#define UNKNOWN_TOKEN 404
-
 void error(char* errorMsg);
 void parserFunction();
 
@@ -57,6 +20,8 @@ void expression();
 void term();
 void factor();
 void identifier();
+void string();
+void right_value();
 
 Token* addrCurrentToken;
 Token* addrLastToken=NULL;
@@ -215,13 +180,14 @@ void assingment(){
     printf("Enter <assingment>\n");
         if(addrCurrentToken->tokenType==ASSIGN_OP){
             getNextToken(); //consome =
-            expression();
+            right_value(); //expression();
         }
         else {
             error("expected a '='");
         }
     printf("Leaving <assingment>\n");
 }
+
 void expression(){
     printf("enter <expression>\n");
     term();
@@ -259,3 +225,89 @@ void factor(){
           
     printf("leaving <factor>\n");
 }
+
+void right_value() {
+    printf("Enter <right_value>\n");
+
+    if(currentTokenType==INT_LIT || currentTokenType==IDENT)
+        expression();
+    else if(currentTokenType==QUOT_MARK)
+        string();
+    else
+        error("Invalid right side of the variable attribution");
+
+    printf("Leaving <right_value>\n");
+}
+
+void string(){
+    printf("Enter <string>\n");
+    if(currentTokenType==QUOT_MARK){
+        getNextToken(); //consome a primeira "
+        while(currentTokenType!=QUOT_MARK){
+            getNextToken(); //consome todos os caracteres ate a proxima aspas duplas
+            if(currentTokenType==EOF)
+                error("The quotation mark for string value never closed");
+        }
+        getNextToken(); //consome a ultima "
+    }
+    printf("Leaving <string>\n");
+}
+
+
+
+/*
+void char_(){ //<char> grammar rule
+    printf("Enter <char_>");
+    if(currentTokenType==SQUOT_MARK){
+        getNextToken(); //consome a primeira '
+        getNextToken(); //consome o char
+        if(currentTokenType==SQUOT_MARK)
+            getNextToken();
+        else
+            error("Single Quotations marks should only be used for assigning char type (only one character)")
+    }
+
+    printf("Leaving <char_>");
+}
+*/
+
+/*
+//functions below refer to the boolean expression grammar rule
+void bool_expression(){
+    printf("enter <expression>\n");
+    bool_term();
+    while(addrCurrentToken->tokenType==OR_OP){
+        getNextToken();
+        bool_term();
+    }
+    printf("leaving <expression>\n");
+}
+void bool_term(){
+    printf("enter <term>\n");
+    bool_factor();
+    while(addrCurrentToken->tokenType==AND_OP){
+        getNextToken();
+        bool_factor();
+    }
+    printf("leaving <term>\n");
+}
+void bool_factor(){
+    printf("enter <factor>\n");
+    if(currentTokenType==IDENT)
+        identifier();
+    else if(currentTokenType==NOT_OP)
+        getNextToken();
+    else if(currentTokenType==LEFT_PAREN){
+        getNextToken();
+        bool_expression();
+        if(currentTokenType==RIGHT_PAREN){
+            getNextToken();
+        }
+        else
+            error("expected a ')'");
+    }
+    else error("right value not recognized");    
+          
+    printf("leaving <factor>\n");
+}
+*/
