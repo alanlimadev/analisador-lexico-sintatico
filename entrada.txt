@@ -2,8 +2,8 @@
 
 //=     !=      ==      &&      ||      !
 //'     "
-int x='s', y="string";
-//x="string";
+//int x='s', y="string";
+int x="string"
 //int y = 'a';
 //int = e&&b;
 

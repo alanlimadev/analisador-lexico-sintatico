@@ -189,12 +189,20 @@ int lookup(int ch){ //responsavel por identificar o token
             fillToken("NOT_OP", NOT_OP);
         }
         break;
+    case '^':
+        addAndGetNextChar();
+        fillToken("OR_OP", OR_OP);
+        break;
     case EOF:
         fillToken("EOF", EOF);
         getChar();
         break;
     default:
         if(ch=='<' || ch=='>'){
+            addAndGetNextChar();
+            if(ch=='='){
+                addAndGetNextChar();
+            }
             fillToken("COMPARE_OP", COMPARE_OP);
         }
         else
