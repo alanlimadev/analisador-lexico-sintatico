@@ -132,24 +132,24 @@ void variable_declaration(){
     printf("Leaving <variable_declaration>\n");
 }
 void variable_attribuition(){
-    printf("enter <value_attribuition>\n");
+    printf("enter <variable_attribuition>\n");
     identifier();
     assingment();
-    printf("leave <value_attribuition>\n");
+    printf("leaving <variable_attribuition>\n");
 }
 void type(){
     printf("Enter <type>\n");
     if(addrCurrentToken->tokenType!=VAR_TYPE)
         error("expected a vartype");
     getNextToken();        
-    printf("leave <type>\n");    
+    printf("leaving <type>\n");    
 }
 void identifier(){
     printf("Enter <identifier>\n");
     if(addrCurrentToken->tokenType!=IDENT)
         error("expected a identifier");
     getNextToken();
-    printf("leave <identifier>\n");
+    printf("leaving <identifier>\n");
 }
 
 //int a, b, c;
@@ -157,7 +157,7 @@ void identifier(){
 void variable_list(){  //<identifier> 
     printf("enter <variable_list>\n");
 
-    if(peekNextToken()!=ASSIGN_OP){ //peekNextToken()==COMMA || peekNextToken()==SEMICOLON
+    if(peekNextToken() != ASSIGN_OP){
         identifier();
         while(currentTokenType==COMMA){
             getNextToken(); //consome a virgula
@@ -166,7 +166,23 @@ void variable_list(){  //<identifier>
                 error("There should only be identifier names separated by commas");
                 //Os nomes do indentificadores devem ser separados por virgulas
         }
-    } else if(peekNextToken()==ASSIGN_OP){
+    } else {
+        while(1){
+            variable_attribuition();
+            if(currentTokenType==COMMA){
+                getNextToken(); //consome a virgula novamente
+            } else {
+                if(currentTokenType==SEMICOLON)
+                    break; //finaliza a função se um ; for encontrado
+                    
+                error("The identifier names and their inicializations should be separated by commas");
+                //Os nomes do indentificadores e suas inicializacoes devem ser separados por virgulas
+            }
+        }
+    }
+
+/*
+    if(peekNextToken()==ASSIGN_OP){
         while(1){
             variable_attribuition();
             if(currentTokenType==COMMA){
@@ -179,9 +195,18 @@ void variable_list(){  //<identifier>
                 //Os nomes do indentificadores e suas inicializacoes devem ser separados por virgulas
             }
         }
+    } else if(peekNextToken()==COMMA || peekNextToken()==SEMICOLON){
+        identifier();
+        while(currentTokenType==COMMA){
+            getNextToken(); //consome a virgula
+            identifier();
+            if(currentTokenType!=COMMA && currentTokenType!=SEMICOLON)
+                error("There should only be identifier names separated by commas");
+                //Os nomes do indentificadores devem ser separados por virgulas
+        }
     } else {
         error("Invalid expression for variable declaration");
-    }
+    } */
 
     printf("leaving <variable_list>\n");
 }
@@ -217,7 +242,9 @@ void term(){
 }
 void factor(){
     printf("enter <factor>\n");
-    if(addrCurrentToken->tokenType==IDENT || addrCurrentToken->tokenType==INT_LIT)
+    if(addrCurrentToken->tokenType==IDENT)
+        identifier();
+    else if(addrCurrentToken->tokenType==INT_LIT)
         getNextToken();
     else if(addrCurrentToken->tokenType==LEFT_PAREN){
         getNextToken();

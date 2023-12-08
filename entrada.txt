@@ -1,5 +1,5 @@
 //Testes Realizados, os erros estão sendo apontados(alguns com msg genericas) mas nesse exemplo, na linha 5 ele nao aponta a linha correta pois ele pulou para o tokenseguinte que esta na linha 6
-int x=1,y,z;
+int a5;
 //int x;
 //int x,y,z;
 //int x=1;
