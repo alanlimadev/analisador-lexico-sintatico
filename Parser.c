@@ -23,6 +23,9 @@ void identifier();
 void string();
 void right_value();
 void char_();
+void bool_expression();
+void bool_term();
+void bool_factor();
 
 Token* addrCurrentToken;
 Token* addrLastToken=NULL;
@@ -87,8 +90,8 @@ void statement(){ //aqui a brincadeira comeca
     else error("Expected ';' in the end of line");
     
     getNextToken();
-    if(addrCurrentToken->tokenType!=EOF)
-        statement();
+    /*if(addrCurrentToken->tokenType!=EOF)
+        statement();*/
 }
 
 void variable_declaration(){
@@ -138,7 +141,7 @@ void variable_list(){  //<identifier>
             if(currentTokenType==COMMA){
                 getNextToken(); //consome a virgula novamente
             } else {
-                if(currentTokenType==SEMICOLON)
+                if(currentTokenType==SEMICOLON || currentTokenType==EOF)
                     break; //finaliza a função se um ; for encontrado
                     
                 error("The identifier names and their inicializations should be separated by commas");
@@ -146,34 +149,6 @@ void variable_list(){  //<identifier>
             }
         }
     }
-
-/*
-    if(peekNextToken()==ASSIGN_OP){
-        while(1){
-            variable_attribuition();
-            if(currentTokenType==COMMA){
-                getNextToken(); //consome a virgula novamente
-            } else {
-                if(currentTokenType==SEMICOLON)
-                    break; //finaliza a função se um ; for encontrado
-
-                error("The identifier names and their inicializations should be separated by commas");
-                //Os nomes do indentificadores e suas inicializacoes devem ser separados por virgulas
-            }
-        }
-    } else if(peekNextToken()==COMMA || peekNextToken()==SEMICOLON){
-        identifier();
-        while(currentTokenType==COMMA){
-            getNextToken(); //consome a virgula
-            identifier();
-            if(currentTokenType!=COMMA && currentTokenType!=SEMICOLON)
-                error("There should only be identifier names separated by commas");
-                //Os nomes do indentificadores devem ser separados por virgulas
-        }
-    } else {
-        error("Invalid expression for variable declaration");
-    } */
-
     printf("leaving <variable_list>\n");
 }
 
@@ -214,6 +189,7 @@ void factor(){
     else if(addrCurrentToken->tokenType==INT_LIT)
         getNextToken();
     else if(addrCurrentToken->tokenType==LEFT_PAREN){
+        printf("%d", currentTokenType);
         getNextToken();
         expression();
         if(addrCurrentToken->tokenType==RIGHT_PAREN){
@@ -227,10 +203,27 @@ void factor(){
     printf("leaving <factor>\n");
 }
 
+int isBoolExpression(){
+    Token* tokenAux=addrCurrentToken;
+    int type;
+    while(addrCurrentToken->prox!=NULL){
+        type=tokenAux->tokenType;
+        if(type==OR_OP||type==NOT_OP||type==AND_OP)
+            return 1;
+        
+        if(type==INT_LIT||type==SUM_OP||type==SUB_OP||type==DIVIDE_OP||type==MULTIPLY_OP)
+            return 0;
+        tokenAux=tokenAux->prox;
+    }
+}
+
 void right_value() {
     printf("Enter <right_value>\n");
 
-    if(currentTokenType==INT_LIT || currentTokenType==IDENT)
+    int isBool = isBoolExpression();
+    if(isBool)
+        bool_expression();
+    else if(!isBool)
         expression();
     else if(currentTokenType==DQUOT_MARK)
         string();
@@ -270,34 +263,34 @@ void char_(){ //<char> grammar rule
     printf("Leaving <char_>\n");
 }
 
-
-/*
-//As funcoes abaixo sao da gramatica booleana:
-//  (devem ser implementadas e testadas aqui, pois o lexico ja esta retornado tudo certinho)
 void bool_expression(){
-    printf("enter <expression>\n");
+    printf("enter <bool_expression>\n");
     bool_term();
     while(addrCurrentToken->tokenType==OR_OP){
         getNextToken();
         bool_term();
     }
-    printf("leaving <expression>\n");
+    printf("leaving <bool_expression>\n");
 }
+
 void bool_term(){
-    printf("enter <term>\n");
+    printf("enter <bool_term>\n");
     bool_factor();
     while(addrCurrentToken->tokenType==AND_OP){
         getNextToken();
         bool_factor();
     }
-    printf("leaving <term>\n");
+    printf("leaving <bool_term>\n");
 }
+
 void bool_factor(){
-    printf("enter <factor>\n");
+    printf("enter <bool_factor>\n");
     if(currentTokenType==IDENT)
         identifier();
-    else if(currentTokenType==NOT_OP)
-        getNextToken();
+    else if(currentTokenType==NOT_OP){
+        getNextToken(); //consome o !
+        identifier();
+    }   
     else if(currentTokenType==LEFT_PAREN){
         getNextToken();
         bool_expression();
@@ -309,6 +302,5 @@ void bool_factor(){
     }
     else error("right value not recognized");    
           
-    printf("leaving <factor>\n");
+    printf("leaving <bool_factor>\n");
 }
-*/
