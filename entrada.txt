@@ -1,8 +1,8 @@
 //Testes Realizados, os erros estão sendo apontados(alguns com msg genericas) mas nesse exemplo, na linha 5 ele nao aponta a linha correta pois ele pulou para o tokenseguinte que esta na linha 6
 
-
+//=     !=      ==      &&      ||      !
 int x="string", x="string", x="string";
-x="string";
+//x="string";
 //int y = 'a';
 //int = e&&b;
 

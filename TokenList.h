@@ -24,8 +24,7 @@
 #define OR_OP 23
 #define AND_OP 24
 #define NOT_OP 25
-#define EQUALS_OP 26
-#define COMPARE_OP 27
+#define COMPARE_OP 26
 
 #define FOR_STMT 28
 #define ELSE_STMT 29

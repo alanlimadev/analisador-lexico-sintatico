@@ -86,6 +86,7 @@ void keyWordToken(){
         return fillToken("ELSE_STMT",ELSE_STMT);
 }
 int lookup(int ch){ //responsavel por identificar o token
+    char next;
     switch (ch)
     {
     case '(':
@@ -105,8 +106,19 @@ int lookup(int ch){ //responsavel por identificar o token
         fillToken("MULTIPLY_OP",MULTIPLY_OP);
         break;
     case '=':
-        addAndGetNextChar();
-        fillToken("ASSIGN_OP",ASSIGN_OP);
+        next=getc(in_fp);
+        if(next=='='){
+            //'=' seguido de outro '=', operador de comparacao
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+            addAndGetNextChar();
+            fillToken("COMPARE_OP", COMPARE_OP);
+        } else {
+            //apenas um '=', operador de atribuicao
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+            fillToken("ASSIGN_OP", ASSIGN_OP);
+        }
         break;
     case '-':
         addAndGetNextChar();
@@ -141,29 +153,44 @@ int lookup(int ch){ //responsavel por identificar o token
         fillToken("BRACE_RIGHT", BRACE_RIGHT);
         break;
     case '&':
-        char next= getc(in_fp);
+        next= getc(in_fp);
         if(next=='&'){
             ungetc(next,in_fp);
             addAndGetNextChar();
         }
         addAndGetNextChar();
-        fillToken("LOGIC_OP", LOGIC_OP);
+        fillToken("AND_OP", AND_OP);
         break;
     case '|':
-        char next1= getc(in_fp);
-        if(next1=='|'){
-            ungetc(next1,in_fp);
+        next= getc(in_fp);
+        if(next=='|'){
+            ungetc(next,in_fp);
             addAndGetNextChar();
         }
         addAndGetNextChar();
-        fillToken("LOGIC_OP", LOGIC_OP);
-        break;                    
+        fillToken("OR_OP", OR_OP);
+        break;
+    case '!':
+         next=getc(in_fp);
+        if(next=='='){
+            //'!' seguido de um '=', operador de comparacao
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+            addAndGetNextChar();
+            fillToken("COMPARE_OP", COMPARE_OP);
+        } else {
+            //apenas um '!', operador de negacao booleana
+            ungetc(next,in_fp);
+            addAndGetNextChar();
+            fillToken("NOT_OP", NOT_OP);
+        }
+        break;
     case EOF:
         fillToken("EOF", EOF);
         getChar();
         break;
     default:
-        if(ch=='<'||ch=='!'||ch=='>'||ch=='^'){
+        if(ch=='<'||ch=='>'){
             fillToken("LOGIC_OP",LOGIC_OP);
         }
         else
