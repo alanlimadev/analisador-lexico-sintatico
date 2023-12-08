@@ -22,6 +22,7 @@ void factor();
 void identifier();
 void string();
 void right_value();
+void char_();
 
 Token* addrCurrentToken;
 Token* addrLastToken=NULL;
@@ -233,6 +234,8 @@ void right_value() {
         expression();
     else if(currentTokenType==DQUOT_MARK)
         string();
+    else if(currentTokenType==SQUOT_MARK)
+        char_();
     else
         error("Invalid right side of the variable attribution");
 
@@ -253,26 +256,24 @@ void string(){
     printf("Leaving <string>\n");
 }
 
-
-
-/*
 void char_(){ //<char> grammar rule
-    printf("Enter <char_>");
-    if(currentTokenType==SQUOT_MARK){
+    printf("Enter <char_>\n");
+    if(currentTokenType==SQUOT_MARK) {
         getNextToken(); //consome a primeira '
-        getNextToken(); //consome o char
-        if(currentTokenType==SQUOT_MARK)
-            getNextToken();
-        else
-            error("Single Quotations marks should only be used for assigning char type (only one character)")
+        getNextToken(); //consome o char (supostamente, a explicacao do erro ta na TODO list)
+        if(currentTokenType==SQUOT_MARK){
+            getNextToken(); //consome a ultima '
+        } else
+            error("Single Quotations marks should only be used for assigning char type (only one character)");
     }
 
-    printf("Leaving <char_>");
+    printf("Leaving <char_>\n");
 }
-*/
+
 
 /*
-//functions below refer to the boolean expression grammar rule
+//As funcoes abaixo sao da gramatica booleana:
+//  (devem ser implementadas e testadas aqui, pois o lexico ja esta retornado tudo certinho)
 void bool_expression(){
     printf("enter <expression>\n");
     bool_term();
