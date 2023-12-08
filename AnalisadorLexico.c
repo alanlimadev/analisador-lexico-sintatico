@@ -140,9 +140,13 @@ int lookup(int ch){ //responsavel por identificar o token
         addAndGetNextChar();
         fillToken("DOT",DOT);
         break;
-    case '"':
+    case '"': //aspas duplas (duble quotation mark)
         addAndGetNextChar();
-        fillToken("QUOT_MARK", QUOT_MARK);
+        fillToken("DQUOT_MARK", DQUOT_MARK);
+        break;
+    case '\'': //aspas simples (single quotation mark)
+        addAndGetNextChar();
+        fillToken("SQUOT_MARK", SQUOT_MARK);
         break;
     case '{':
         addAndGetNextChar();
@@ -190,8 +194,8 @@ int lookup(int ch){ //responsavel por identificar o token
         getChar();
         break;
     default:
-        if(ch=='<'||ch=='>'){
-            fillToken("LOGIC_OP",LOGIC_OP);
+        if(ch=='<' || ch=='>'){
+            fillToken("COMPARE_OP", COMPARE_OP);
         }
         else
             fillToken("UNKNOWN_TOKEN", UNKNOWN_TOKEN);   

@@ -52,7 +52,7 @@ void ungetNextToken(){ //volta (APENAS 1 NO MAXIMO) para o token antecessor do t
 
 void parserFunction(Token* tokenList){ //unica funcao presente em Parser.h, apenas ela eh chamada na main de AnalisadorLexico.c
     addrCurrentToken = tokenList;
-    //CurrentToken->tokenType=CurrentToken->tokenType;
+    currentTokenType=addrCurrentToken->tokenType;
     program();
 }
 
@@ -231,7 +231,7 @@ void right_value() {
 
     if(currentTokenType==INT_LIT || currentTokenType==IDENT)
         expression();
-    else if(currentTokenType==QUOT_MARK)
+    else if(currentTokenType==DQUOT_MARK)
         string();
     else
         error("Invalid right side of the variable attribution");
@@ -241,9 +241,9 @@ void right_value() {
 
 void string(){
     printf("Enter <string>\n");
-    if(currentTokenType==QUOT_MARK){
+    if(currentTokenType==DQUOT_MARK){
         getNextToken(); //consome a primeira "
-        while(currentTokenType!=QUOT_MARK){
+        while(currentTokenType!=DQUOT_MARK){
             getNextToken(); //consome todos os caracteres ate a proxima aspas duplas
             if(currentTokenType==EOF)
                 error("The quotation mark for string value never closed");
