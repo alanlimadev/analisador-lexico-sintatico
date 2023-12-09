@@ -5,7 +5,6 @@
 #include "TokenList.h"
 #include"Parser.h"
 
-
 int charClass;
 char lexema[100];
 int lex_lengh=0;
@@ -70,20 +69,36 @@ void getNonComments(){
     }
 }
 void keyWordToken(){
-    if(strcmp(lexema,"public")==0||strcmp(lexema,"private")==0||strcmp(lexema,"protected")==0)
+    if(strcmp(lexema,"public")==0)
         return fillToken("ACESS_MOD",ACESS_MOD);
-    if(strcmp(lexema,"char")==0||strcmp(lexema,"int")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0||strcmp(lexema,"string")==0)
+    if(strcmp(lexema,"void")==0)
+        return fillToken("VOID_KW",VOID_KW);    
+    if(strcmp(lexema,"char")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
+    if(strcmp(lexema,"string[]")==0)
+        return fillToken("STRING_TYPE",STRING_ARG);
+    if(strcmp(lexema,"int")==0)
+        return fillToken("INT_TYPE",INT_TYPE);
     if(strcmp(lexema,"static")==0)
         return fillToken("STATIC_KW",STATIC_KW);
     if(strcmp(lexema,"if")==0)
         return fillToken("IF_STMT",IF_STMT);
+    if(strcmp(lexema,"args")==0)
+        return fillToken("ARGS_KW", ARGS_KW);
+    if(strcmp(lexema,"Main")==0)
+        return fillToken("MAIN_KW",MAIN_KW);    
     if(strcmp(lexema,"while")==0)
         return fillToken("WHILE_STMT",WHILE_STMT);
     if(strcmp(lexema,"for")==0)
         return fillToken("FOR_STMT",FOR_STMT);
     if(strcmp(lexema,"else")==0)
         return fillToken("ELSE_STMT",ELSE_STMT);
+    if(strcmp(lexema,"true")==0)
+        return fillToken("TRUE_OP",TRUE_OP);
+    if(strcmp(lexema,"false")==0)
+        return fillToken("FALSE_OP",FALSE_OP);
+    if(strcmp(lexema,"return")==0)
+        return fillToken("RETURN_KW", RETURN_KW);    
 }
 int lookup(int ch){ //responsavel por identificar o token
     char next;

@@ -4,9 +4,25 @@
 //'     "
 
 
-int x= a&&b||!c;
+//int x= a&&b||!c;
 //a = a&&b||!c;
 
+//while(!a){
+//        int x = 0;
+//        if(a||B){
+//           int cize;
+//       }
+//}
+
+string a = "ayuff float ertyu";
+char b = 'bhsdvhjbhwervi';
+
+
+if(a&&b){
+    int a = 5;
+} else {
+    int x;
+}
 
 //int (x=!a&&b||c);
 //int y = 'a';

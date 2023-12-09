@@ -38,6 +38,14 @@
 #define BRACE_RIGHT 38
 #define DQUOT_MARK 40
 #define SQUOT_MARK 41
+#define RETURN_KW 42
+#define TRUE_OP 43
+#define FALSE_OP 44
+#define MAIN_KW 45
+#define VOID_KW 46
+#define INT_TYPE 47
+#define STRING_ARG 48
+#define ARGS_KW 49
 #define UNKNOWN_TOKEN 404
 
 
