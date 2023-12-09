@@ -266,7 +266,7 @@ int isBoolExpression()
 {
     Token *tokenAux = addrCurrentToken;
     int type;
-    while (addrCurrentToken->prox != NULL)
+    while (tokenAux->prox != NULL)
     {
         type = tokenAux->tokenType;
         if (type == OR_OP || type == NOT_OP || type == AND_OP)
@@ -276,6 +276,8 @@ int isBoolExpression()
             return 0;
         tokenAux = tokenAux->prox;
     }
+
+    return 0;
 }
 
 void right_value()
@@ -475,7 +477,15 @@ void for_loop() {
             }
             getNextToken();
 
-            statement();
+            if(currentTokenType == IDENT){
+                statement();
+            } else{
+                if(currentTokenType){
+                    error("Erro: expected ;");
+                }
+                getNextToken();
+            }
+            
 
             bool_expression();
             //getNextToken();
