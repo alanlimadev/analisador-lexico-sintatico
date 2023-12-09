@@ -7,9 +7,13 @@
 //int x= a&&b||!c;
 //a = a&&b||!c;
 
-if(x){
-    int a;
-    a = 5;
+if(a&&B){
+    while(!a){
+        int x = 0;
+        if(a||B){
+            int cize;
+        }
+    }
 }
 
 //int (x=!a&&b||c);

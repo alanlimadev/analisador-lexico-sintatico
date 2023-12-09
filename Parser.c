@@ -6,7 +6,6 @@
 #include <ctype.h>
 
 void error(char *errorMsg);
-void parserFunction();
 
 // Funcoes da Gramatica:
 void program();
@@ -32,7 +31,6 @@ void control_structures();
 void while_loop();
 void for_loop();
 Token *addrCurrentToken;
-Token *addrLastToken = NULL;
 int currentTokenType = UNKNOWN;
 
 void error(char *errorMsg)
@@ -43,7 +41,6 @@ void error(char *errorMsg)
 
 void getNextToken()
 { // avanca para o proximo token de Tokens
-    addrLastToken = addrCurrentToken;
     addrCurrentToken = addrCurrentToken->prox;
     currentTokenType = addrCurrentToken->tokenType;
 }
@@ -53,14 +50,6 @@ int peekNextToken()
     return addrCurrentToken->prox->tokenType;
 }
 
-void ungetNextToken()
-{ // volta (APENAS 1 NO MAXIMO) para o token antecessor do token atual
-    if (addrLastToken == NULL)
-        exit(404);
-    addrCurrentToken = addrLastToken;
-    addrLastToken = NULL;
-    currentTokenType = addrCurrentToken->tokenType;
-}
 
 void parserFunction(Token *tokenList)
 { // unica funcao presente em Parser.h, apenas ela eh chamada na main de AnalisadorLexico.c
@@ -365,7 +354,7 @@ void char_()
 void bool_expression()
 {
     printf("enter <bool_expression>\n");
-    bool_term();
+    bool_term(); 
     while (addrCurrentToken->tokenType == OR_OP)
     {
         getNextToken();
@@ -408,7 +397,7 @@ void bool_factor()
             error("expected a ')'");
     }
     else
-        error("right value not recognized");
+        error("expected a logic expression");
 
     printf("leaving <bool_factor>\n");
 }
@@ -495,7 +484,9 @@ void for_loop()
 {
     printf("falta implementar");
 }
-
+int isControlStructure(){
+    return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
+}
 void embedded_statement()
 {
     printf("Enter <embedded_statement>\n");
@@ -503,15 +494,15 @@ void embedded_statement()
     if (addrCurrentToken->tokenType == BRACE_LEFT)
     {
         // Se o bloco de código inicia com uma chave "{"
-        getNextToken(); // Consome "{"
-        statement();    // Avalia o código dentro do bloco
+        getNextToken();// Consome "{"
+        isControlStructure() ? control_structures(): statement(); // Avalia o código dentro do bloco
 
         // Aqui você lidaria com o código dentro do bloco
         // Você provavelmente teria um loop ou uma lógica para processar o código dentro do bloco
 
         while (addrCurrentToken->tokenType != BRACE_RIGHT)
         {
-            statement();
+            isControlStructure() ? control_structures(): statement();
         }
 
         if (addrCurrentToken->tokenType == BRACE_RIGHT)
