@@ -94,7 +94,7 @@ void statement()
 
     } else {
 
-        if (addrCurrentToken->tokenType == VAR_TYPE || addrCurrentToken->tokenType == STRING_TYPE || addrCurrentToken->tokenType == INT_TYPE)
+        if (addrCurrentToken->tokenType == VAR_TYPE  || addrCurrentToken->tokenType == INT_TYPE)
         {
             variable_declaration();
         }
@@ -142,7 +142,7 @@ void variable_attribuition()
 void type()
 {
     printf("Enter <type>\n");
-    if (addrCurrentToken->tokenType != VAR_TYPE && addrCurrentToken->tokenType !=STRING_TYPE && addrCurrentToken->tokenType != INT_TYPE)
+    if (addrCurrentToken->tokenType != VAR_TYPE && addrCurrentToken->tokenType != INT_TYPE)
         error("expected a vartype");
     getNextToken();
     printf("leaving <type>\n");

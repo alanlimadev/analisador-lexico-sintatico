@@ -43,8 +43,8 @@
 #define FALSE_OP 44
 #define MAIN_KW 45
 #define VOID_KW 46
-#define STRING_TYPE 47
-#define INT_TYPE 48
+#define INT_TYPE 47
+#define STRING_ARG 48
 #define ARGS_KW 49
 #define UNKNOWN_TOKEN 404
 
