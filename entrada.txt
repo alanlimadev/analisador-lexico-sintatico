@@ -24,10 +24,9 @@
 //    int x;
 //}
 
-for(int a = 5; a && b; a = a + b){
-    int c = a;
+for(int a = 1;a&&b; a=a+1){
+    
 }
-
 //int (x=!a&&b||c);
 //int y = 'a';
 //int = e&&b;

@@ -272,7 +272,7 @@ int isBoolExpression()
         if (type == OR_OP || type == NOT_OP || type == AND_OP)
             return 1;
 
-        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP)
+        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP )
             return 0;
         tokenAux = tokenAux->prox;
     }
@@ -478,12 +478,14 @@ void for_loop() {
             statement();
 
             bool_expression();
-            getNextToken();
+            //getNextToken();
 
-            if (currentTokenType != SEMICOLON){
-                error("Erro: esperava-se ; no final da statement");
+            if (currentTokenType == SEMICOLON){
+                getNextToken();
+                variable_attribuition();
             }
-            variable_attribuition();
+            else
+                error("Erro: esperava-se ; no final da statement"); 
 
             if(currentTokenType != RIGHT_PAREN){
                 error("Erro: for loop statements nao foi fechado");
@@ -497,11 +499,12 @@ void for_loop() {
 
             while (currentTokenType != BRACE_RIGHT && currentTokenType != EOF){
                 statement();
-                getNextToken();
+                //getNextToken();
                 if(currentTokenType == EOF){
                     error("Erro: for loop nao foi fechado");
                 }
             }
+            getNextToken();
             
         } else{
             break;
