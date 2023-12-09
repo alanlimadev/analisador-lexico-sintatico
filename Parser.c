@@ -266,16 +266,18 @@ int isBoolExpression()
 {
     Token *tokenAux = addrCurrentToken;
     int type;
-    while (addrCurrentToken->prox != NULL)
+    while (tokenAux->prox != NULL)
     {
         type = tokenAux->tokenType;
         if (type == OR_OP || type == NOT_OP || type == AND_OP)
             return 1;
 
-        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP)
+        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP )
             return 0;
         tokenAux = tokenAux->prox;
     }
+
+    return 0;
 }
 
 void right_value()
@@ -465,7 +467,59 @@ void while_loop()
 }
 
 void for_loop() {
-    printf("falta implementar");
+    while (currentTokenType != BRACE_RIGHT) {
+        // Verifica se o lexema é um loop "for"
+        if (currentTokenType == FOR_STMT) {
+            getNextToken();
+
+            if (currentTokenType != LEFT_PAREN) {
+                error("Erro: Esperava-se um tipo de variável na inicialização do loop 'for'");
+            }
+            getNextToken();
+
+            if(currentTokenType == IDENT){
+                statement();
+            } else{
+                if(currentTokenType){
+                    error("Erro: expected ;");
+                }
+                getNextToken();
+            }
+            
+
+            bool_expression();
+            //getNextToken();
+
+            if (currentTokenType == SEMICOLON){
+                getNextToken();
+                variable_attribuition();
+            }
+            else
+                error("Erro: esperava-se ; no final da statement"); 
+
+            if(currentTokenType != RIGHT_PAREN){
+                error("Erro: for loop statements nao foi fechado");
+            }
+
+            getNextToken();
+            if(currentTokenType != BRACE_LEFT){
+                error("Erro: for loop nao foi iniciado corretamente");
+            }
+            getNextToken();
+
+            while (currentTokenType != BRACE_RIGHT && currentTokenType != EOF){
+                statement();
+                //getNextToken();
+                if(currentTokenType == EOF){
+                    error("Erro: for loop nao foi fechado");
+                }
+            }
+            getNextToken();
+            
+        } else{
+            break;
+        }
+    }
 }
 int isControlStructure(){
     return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
