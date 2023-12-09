@@ -73,10 +73,10 @@ void keyWordToken(){
         return fillToken("ACESS_MOD",ACESS_MOD);
     if(strcmp(lexema,"void")==0)
         return fillToken("VOID_KW",VOID_KW);    
-    if(strcmp(lexema,"char")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0)
+    if(strcmp(lexema,"char")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0||strcmp(lexema,"string")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
     if(strcmp(lexema,"string[]")==0)
-        return fillToken("STRING_TYPE",STRING_ARG);
+        return fillToken("STRING_TYPE",VAR_TYPE);
     if(strcmp(lexema,"int")==0)
         return fillToken("INT_TYPE",INT_TYPE);
     if(strcmp(lexema,"static")==0)

@@ -466,7 +466,7 @@ void while_loop()
     printf("Leaving <while_loop>\n");
 }
 
-void for_loop() {
+void for_loop() { //micaias creation
     while (currentTokenType != BRACE_RIGHT) {
         // Verifica se o lexema é um loop "for"
         if (currentTokenType == FOR_STMT) {
@@ -477,10 +477,10 @@ void for_loop() {
             }
             getNextToken();
 
-            if(currentTokenType == IDENT){
+            if(currentTokenType == INT_TYPE){
                 statement();
             } else{
-                if(currentTokenType){
+                if(currentTokenType!=SEMICOLON){
                     error("Erro: expected ;");
                 }
                 getNextToken();

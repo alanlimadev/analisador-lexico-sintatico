@@ -13,20 +13,17 @@
 //           int cize;
 //       }
 //}
-
-string a = "ayuff float ertyu";
-char b = 'bhsdvhjbhwervi';
-
+for(x=1; !A; a=1){
+    
+}
 
 //if(a&&b){
 //    int a = 5;
 //} else {
 //    int x;
 //}
-
-for(int a = 1;a&&b; a=a+1){
-    
-}
+string a = "ayuff float ertyu";
+char b = 'bhsdvhjbhwervi';
 //int (x=!a&&b||c);
 //int y = 'a';
 //int = e&&b;
