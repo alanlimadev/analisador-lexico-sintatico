@@ -30,6 +30,9 @@ void embedded_statement();
 void control_structures();
 void while_loop();
 void for_loop();
+int isBoolExpression();
+int isControlStructure();
+
 Token *addrCurrentToken;
 int currentTokenType = UNKNOWN;
 
@@ -63,14 +66,11 @@ void program()
     printf("Enter <program>\n");
     while (currentTokenType != EOF)
     {
-        if (currentTokenType == IF_STMT | currentTokenType == WHILE_STMT | currentTokenType == FOR_STMT)
-        {
-            control_structures();
-        }
-        else
-        {
+        //*if (currentTokenType == IF_STMT | currentTokenType == WHILE_STMT | currentTokenType == FOR_STMT)
+            //control_structures();
+        //else
             statement();
-        }
+        
     }
     printf("Leaving <program>\n");
 }
@@ -88,30 +88,39 @@ void control_structures()
 void statement()
 {
     printf("Enter <statement>\n");
-    if (addrCurrentToken->tokenType == VAR_TYPE)
-    {
-        variable_declaration();
-    }
-    else if (addrCurrentToken->tokenType == IDENT)
-    {
-        variable_attribuition();
-        while (addrCurrentToken->tokenType == COMMA)
+
+    if(isControlStructure()){
+        control_structures();
+
+    } else {
+
+        if (addrCurrentToken->tokenType == VAR_TYPE)
         {
-            getNextToken(); // consome ,
-            variable_attribuition();
+            variable_declaration();
         }
+        else if (addrCurrentToken->tokenType == IDENT)
+        {
+            variable_attribuition();
+            while (addrCurrentToken->tokenType == COMMA)
+            {
+                getNextToken(); // consome ,
+                variable_attribuition();
+            }
+        }
+        else
+        {
+            error("Declaracao de variavel invalida");
+        }
+
+        // printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
+
+        if (addrCurrentToken->tokenType != SEMICOLON)
+            error("Expected ';' in the end of line");
+        getNextToken(); //consome o ;
+
     }
-    else
-    {
-        error("Declaracao de variavel invalida");
-    }
 
-    // printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
-
-    if (addrCurrentToken->tokenType != SEMICOLON)
-        error("Expected ';' in the end of line");
-
-    getNextToken();
+    
 
     printf("Leaving <statement>\n");
 }
@@ -149,8 +158,7 @@ void identifier()
 
 // int a, b, c;
 // int a=5, b=7, c=9;
-void variable_list()
-{ //<identifier>
+void variable_list() { //<identifier>
     printf("enter <variable_list>\n");
 
     if (peekNextToken() != ASSIGN_OP)
@@ -187,8 +195,7 @@ void variable_list()
     printf("leaving <variable_list>\n");
 }
 
-void assingment()
-{
+void assingment() {
     printf("Enter <assingment>\n");
     if (addrCurrentToken->tokenType == ASSIGN_OP)
     {
@@ -200,43 +207,17 @@ void assingment()
         error("expected a '='");
     }
 
-    //      // - if else
-    // if (addrCurrentToken->tokenType == VAR_TYPE)
-    // {
-    //     variable_declaration();
-    // }
-    // else if (addrCurrentToken->tokenType == IDENT)
-    // {
-    //     variable_attribuition();
-    //     while (addrCurrentToken->tokenType == COMMA)
-    //     {
-    //         getNextToken(); // consome ,
-    //         variable_attribuition();
-    //         if (addrCurrentToken->tokenType == IF_STMT)
-    //         {
-    //             if_else_statement(); // Chama a função para parsear um "if else"
-    //         }
-    //         else
-    //         {
-    //             error("Invalid statement");
-    //         }
-    //     }
-    // }
-    // else if (addrCurrentToken->tokenType == IF_STMT)
-    // {
-    //     if_else_statement(); // Chama a função para parsear um "if else"
-    // }
-    // else
-    // {
-    //     error("Invalid statement");
-    // }
-
     printf("Leaving <assingment>\n");
 }
 
 void expression()
 {
     printf("enter <expression>\n");
+
+    if(isBoolExpression())
+        error("Invalid arithmetic expression (Expected only identifiers, integer literals and arithmetic operators)");
+    
+
     term();
     while (addrCurrentToken->tokenType == SUM_OP || addrCurrentToken->tokenType == SUB_OP)
     {
@@ -265,7 +246,7 @@ void factor()
         getNextToken();
     else if (addrCurrentToken->tokenType == LEFT_PAREN)
     {
-        printf("%d", currentTokenType);
+        //printf("%d", currentTokenType);
         getNextToken();
         expression();
         if (addrCurrentToken->tokenType == RIGHT_PAREN)
@@ -302,17 +283,18 @@ void right_value()
     printf("Enter <right_value>\n");
 
     int isBool = isBoolExpression();
-    if (isBool)
-        bool_expression();
-    else if (!isBool)
-        expression();
-    else if (currentTokenType == DQUOT_MARK)
-        string();
-    else if (currentTokenType == SQUOT_MARK)
-        char_();
-    else
-        error("Invalid right side of the variable attribution");
 
+    if (currentTokenType == DQUOT_MARK)
+        string(); // "(...)"
+    else if (currentTokenType == SQUOT_MARK)
+        char_(); // '(...)'
+    else if (isBool)
+        bool_expression(); //expressao booleana
+    else if (!isBool)
+        expression(); //int_lit ou expressao aritimetica
+    else 
+        error("Invalid right side of the variable attribution");
+    
     printf("Leaving <right_value>\n");
 }
 
@@ -354,6 +336,10 @@ void char_()
 void bool_expression()
 {
     printf("enter <bool_expression>\n");
+
+    if(!isBoolExpression())
+        error("Invalid boolean expression (Expected only identifiers and boolean operators)");
+
     bool_term(); 
     while (addrCurrentToken->tokenType == OR_OP)
     {
@@ -380,13 +366,11 @@ void bool_factor()
     printf("enter <bool_factor>\n");
     if (currentTokenType == IDENT)
         identifier();
-    else if (currentTokenType == NOT_OP)
-    {
+    else if (currentTokenType == NOT_OP) {
         getNextToken(); // consome o !
         identifier();
     }
-    else if (currentTokenType == LEFT_PAREN)
-    {
+    else if (currentTokenType == LEFT_PAREN) {
         getNextToken();
         bool_expression();
         if (currentTokenType == RIGHT_PAREN)
@@ -480,8 +464,7 @@ void while_loop()
     printf("Leaving <while_loop>\n");
 }
 
-void for_loop()
-{
+void for_loop() {
     printf("falta implementar");
 }
 int isControlStructure(){
@@ -495,14 +478,15 @@ void embedded_statement()
     {
         // Se o bloco de código inicia com uma chave "{"
         getNextToken();// Consome "{"
-        isControlStructure() ? control_structures(): statement(); // Avalia o código dentro do bloco
+
+        //isControlStructure() ? control_structures(): statement(); // Avalia o código dentro do bloco
 
         // Aqui você lidaria com o código dentro do bloco
         // Você provavelmente teria um loop ou uma lógica para processar o código dentro do bloco
 
         while (addrCurrentToken->tokenType != BRACE_RIGHT)
         {
-            isControlStructure() ? control_structures(): statement();
+            statement();
         }
 
         if (addrCurrentToken->tokenType == BRACE_RIGHT)

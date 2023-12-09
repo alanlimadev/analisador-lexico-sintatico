@@ -5,7 +5,6 @@
 #include "TokenList.h"
 #include"Parser.h"
 
-
 int charClass;
 char lexema[100];
 int lex_lengh=0;
