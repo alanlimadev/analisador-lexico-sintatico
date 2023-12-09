@@ -74,36 +74,46 @@ void program()
     printf("Enter <program>\n");
     while (currentTokenType != EOF)
     {
-        if(currentTokenType==IF_STMT | currentTokenType==WHILE_STMT | currentTokenType==FOR_STMT){
+        if (currentTokenType == IF_STMT | currentTokenType == WHILE_STMT | currentTokenType == FOR_STMT)
+        {
             control_structures();
-        } else {
+        }
+        else
+        {
             statement();
         }
     }
     printf("Leaving <program>\n");
 }
 
-void control_structures() {
-    if(currentTokenType == IF_STMT) 
+void control_structures()
+{
+    if (currentTokenType == IF_STMT)
         if_else_statement();
-    else if(currentTokenType == WHILE_STMT) 
+    else if (currentTokenType == WHILE_STMT)
         while_loop();
-    else if(currentTokenType == FOR_STMT)
+    else if (currentTokenType == FOR_STMT)
         for_loop();
 }
 
-void statement() {
+void statement()
+{
     printf("Enter <statement>\n");
-    if (addrCurrentToken->tokenType == VAR_TYPE) {
+    if (addrCurrentToken->tokenType == VAR_TYPE)
+    {
         variable_declaration();
     }
-    else if (addrCurrentToken->tokenType == IDENT) {
+    else if (addrCurrentToken->tokenType == IDENT)
+    {
         variable_attribuition();
-        while (addrCurrentToken->tokenType == COMMA) {
+        while (addrCurrentToken->tokenType == COMMA)
+        {
             getNextToken(); // consome ,
             variable_attribuition();
         }
-    } else {
+    }
+    else
+    {
         error("Declaracao de variavel invalida");
     }
 
@@ -445,11 +455,44 @@ void if_else_statement()
     printf("Leaving <if_else_statement>\n");
 }
 
-void while_loop(){
-    printf("falta implementar");
+void while_loop()
+{
+    printf("Enter <while_loop>\n");
+
+    if (addrCurrentToken->tokenType == WHILE_STMT)
+    {
+        getNextToken(); // Consome "while"
+
+        if (addrCurrentToken->tokenType == LEFT_PAREN)
+        {
+            getNextToken();    // Consome "("
+            bool_expression(); // Avalia a expressão booleana
+
+            if (addrCurrentToken->tokenType == RIGHT_PAREN)
+            {
+                getNextToken();       // Consome ")"
+                embedded_statement(); // Avalia o bloco de código dentro do "while"
+            }
+            else
+            {
+                error("Expected closing parenthesis ')'");
+            }
+        }
+        else
+        {
+            error("Expected opening parenthesis '('");
+        }
+    }
+    else
+    {
+        error("Invalid while statement");
+    }
+
+    printf("Leaving <while_loop>\n");
 }
 
-void for_loop(){
+void for_loop()
+{
     printf("falta implementar");
 }
 
