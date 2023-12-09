@@ -38,7 +38,8 @@ int currentTokenType = UNKNOWN;
 
 void error(char *errorMsg)
 {
-    printf("ERROR! %s at line %d", errorMsg, addrCurrentToken->line);
+    printf("ERROR - Unexpected token '%s'! %s at line %d", addrCurrentToken->name, errorMsg, addrCurrentToken->line);
+    //printf("ERROR! %s at line %d", errorMsg, addrCurrentToken->line);
     exit(1);
 }
 
@@ -466,60 +467,60 @@ void while_loop()
     printf("Leaving <while_loop>\n");
 }
 
-void for_loop() { //micaias creation
-    while (currentTokenType != BRACE_RIGHT) {
-        // Verifica se o lexema é um loop "for"
-        if (currentTokenType == FOR_STMT) {
-            getNextToken();
+void for_loop() {
+    printf("enter <for_loop>\n");
+    // Verifica se o lexema é um loop "for"
+    if (currentTokenType == FOR_STMT) {
+    getNextToken(); //consome o FOR
 
-            if (currentTokenType != LEFT_PAREN) {
-                error("Erro: Esperava-se um tipo de variável na inicialização do loop 'for'");
-            }
-            getNextToken();
-
-            if(currentTokenType == INT_TYPE){
-                statement();
-            } else{
-                if(currentTokenType!=SEMICOLON){
-                    error("Erro: expected ;");
-                }
-                getNextToken();
-            }
-            
-
-            bool_expression();
-            //getNextToken();
-
-            if (currentTokenType == SEMICOLON){
-                getNextToken();
-                variable_attribuition();
-            }
-            else
-                error("Erro: esperava-se ; no final da statement"); 
-
-            if(currentTokenType != RIGHT_PAREN){
-                error("Erro: for loop statements nao foi fechado");
-            }
-
-            getNextToken();
-            if(currentTokenType != BRACE_LEFT){
-                error("Erro: for loop nao foi iniciado corretamente");
-            }
-            getNextToken();
-
-            while (currentTokenType != BRACE_RIGHT && currentTokenType != EOF){
-                statement();
-                //getNextToken();
-                if(currentTokenType == EOF){
-                    error("Erro: for loop nao foi fechado");
-                }
-            }
-            getNextToken();
-            
-        } else{
-            break;
+        if (currentTokenType != LEFT_PAREN) {
+            error("Expected a right parentheses '(' in for loop");
         }
-    }
+        getNextToken(); //consome o (
+
+        if(currentTokenType==VAR_TYPE || currentTokenType==INT_TYPE){
+           variable_declaration();
+        } else if(currentTokenType == IDENT){
+            variable_attribuition();
+        }
+            
+        if(currentTokenType!=SEMICOLON){
+            error("Expected ';' in for loop");
+        }
+        getNextToken(); //consome o primeiro ;
+        if(currentTokenType!=SEMICOLON){
+            if(isBoolExpression()){
+                bool_expression();
+            } else {
+                error("Expected a boolean expression in for loop");
+            }
+        }
+
+        if(currentTokenType!=SEMICOLON){
+            error("Expected ';' in for loop");
+        }
+        getNextToken(); //consome o segundo ;
+
+
+        if(currentTokenType!=RIGHT_PAREN){
+           if(!isBoolExpression()){
+                variable_attribuition();
+            } else {
+                error("Expected a variable attribution in for loop");
+            }
+        }
+
+        if(currentTokenType==RIGHT_PAREN){
+            getNextToken(); //consome o )
+        } else
+            error("Expected a closing parentheses in for loop");
+
+        } else {
+             error("in <for_loop>");
+        }
+    embedded_statement();
+
+    printf("leaving <for_loop>\n");
 }
 int isControlStructure(){
     return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
