@@ -471,7 +471,7 @@ void for_loop() {
             getNextToken();
 
             if (currentTokenType != LEFT_PAREN) {
-                erro("Erro: Esperava-se um tipo de variável na inicialização do loop 'for'");
+                error("Erro: Esperava-se um tipo de variável na inicialização do loop 'for'");
             }
             getNextToken();
 
