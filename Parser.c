@@ -465,7 +465,49 @@ void while_loop()
 }
 
 void for_loop() {
-    printf("falta implementar");
+    while (currentTokenType != BRACE_RIGHT) {
+        // Verifica se o lexema é um loop "for"
+        if (currentTokenType == FOR_STMT) {
+            getNextToken();
+
+            if (currentTokenType != LEFT_PAREN) {
+                erro("Erro: Esperava-se um tipo de variável na inicialização do loop 'for'");
+            }
+            getNextToken();
+
+            statement();
+            getNextToken();
+
+            bool_expression();
+            getNextToken();
+
+            if (currentTokenType != SEMICOLON){
+                error("Erro: esperava-se ; no final da statement");
+            }
+            variable_attribuition();
+
+            if(currentTokenType != RIGHT_PAREN){
+                error("Erro: for loop statements nao foi fechado");
+            }
+
+            getNextToken();
+            if(currentTokenType != BRACE_LEFT){
+                error("Erro: for loop nao foi iniciado corretamente");
+            }
+            getNextToken();
+
+            while (currentTokenType != BRACE_RIGHT && currentTokenType != EOF){
+                statement();
+                getNextToken();
+                if(currentTokenType == EOF){
+                    error("Erro: for loop nao foi fechado");
+                }
+            }
+            
+        } else{
+            break;
+        }
+    }
 }
 int isControlStructure(){
     return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
