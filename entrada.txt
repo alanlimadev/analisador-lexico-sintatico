@@ -4,9 +4,13 @@
 //'     "
 
 
-int x= a&&b||!c;
+//int x= a&&b||!c;
 //a = a&&b||!c;
 
+if(x){
+    int a;
+    a = 5;
+};
 
 //int (x=!a&&b||c);
 //int y = 'a';
