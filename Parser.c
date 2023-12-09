@@ -28,7 +28,9 @@ void bool_term();
 void bool_factor();
 void if_else_statement();
 void embedded_statement();
-
+void control_structures();
+void while_loop();
+void for_loop();
 Token *addrCurrentToken;
 Token *addrLastToken = NULL;
 int currentTokenType = UNKNOWN;
@@ -72,46 +74,47 @@ void program()
     printf("Enter <program>\n");
     while (currentTokenType != EOF)
     {
-        statement();
+        if(currentTokenType==IF_STMT | currentTokenType==WHILE_STMT | currentTokenType==FOR_STMT){
+            control_structures();
+        } else {
+            statement();
+        }
     }
     printf("Leaving <program>\n");
 }
 
-void statement()
-{ // aqui a brincadeira comeca
+void control_structures() {
+    if(currentTokenType == IF_STMT) 
+        if_else_statement();
+    else if(currentTokenType == WHILE_STMT) 
+        while_loop();
+    else if(currentTokenType == FOR_STMT)
+        for_loop();
+}
+
+void statement() {
     printf("Enter <statement>\n");
-    if (addrCurrentToken->tokenType == VAR_TYPE)
-    {
+    if (addrCurrentToken->tokenType == VAR_TYPE) {
         variable_declaration();
     }
-    else if (addrCurrentToken->tokenType == IDENT)
-    {
+    else if (addrCurrentToken->tokenType == IDENT) {
         variable_attribuition();
-        while (addrCurrentToken->tokenType == COMMA)
-        {
+        while (addrCurrentToken->tokenType == COMMA) {
             getNextToken(); // consome ,
             variable_attribuition();
         }
-    }
-    else if (addrCurrentToken->tokenType == IF_STMT)
-    {
-        if_else_statement(); // Chama a função para parsear um "if else"
-    }
-    else
-    {
+    } else {
         error("Declaracao de variavel invalida");
     }
 
     // printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
 
-    if (addrCurrentToken->tokenType == SEMICOLON)
-        printf("Leaving <statement>\n");
-    else
+    if (addrCurrentToken->tokenType != SEMICOLON)
         error("Expected ';' in the end of line");
 
     getNextToken();
-    /*if(addrCurrentToken->tokenType!=EOF)
-        statement();*/
+
+    printf("Leaving <statement>\n");
 }
 
 void variable_declaration()
@@ -440,6 +443,14 @@ void if_else_statement()
     }
 
     printf("Leaving <if_else_statement>\n");
+}
+
+void while_loop(){
+    printf("falta implementar");
+}
+
+void for_loop(){
+    printf("falta implementar");
 }
 
 void embedded_statement()

@@ -10,7 +10,7 @@
 if(x){
     int a;
     a = 5;
-};
+}
 
 //int (x=!a&&b||c);
 //int y = 'a';
