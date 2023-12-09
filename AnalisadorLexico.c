@@ -75,7 +75,7 @@ void keyWordToken(){
         return fillToken("VOID_KW",VOID_KW);    
     if(strcmp(lexema,"char")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
-    if(strcmp(lexema,"string"))
+    if(strcmp(lexema,"string")==0)
         return fillToken("STRING_TYPE",STRING_TYPE);
     if(strcmp(lexema,"int")==0)
         return fillToken("INT_TYPE",INT_TYPE);
@@ -83,7 +83,7 @@ void keyWordToken(){
         return fillToken("STATIC_KW",STATIC_KW);
     if(strcmp(lexema,"if")==0)
         return fillToken("IF_STMT",IF_STMT);
-    if(strcmp(lexema,"args"))
+    if(strcmp(lexema,"args")==0)
         return fillToken("ARGS_KW", ARGS_KW);
     if(strcmp(lexema,"Main")==0)
         return fillToken("MAIN_KW",MAIN_KW);    

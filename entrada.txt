@@ -14,7 +14,7 @@
 //       }
 //}
 
-string a = "ayuff float ert@%yu'";
+string a = "ayuff float ertyu";
 char b = 'bhsdvhjbhwervi';
 
 
