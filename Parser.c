@@ -476,7 +476,6 @@ void for_loop() {
             getNextToken();
 
             statement();
-            getNextToken();
 
             bool_expression();
             getNextToken();

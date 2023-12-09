@@ -14,14 +14,18 @@
 //       }
 //}
 
-string a = "ayuff float ert@%yu'";
-char b = 'bhsdvhjbhwervi';
+//string a = "ayuff float ert@%yu'";
+//char b = 'bhsdvhjbhwervi';
 
 
-if(a&&b){
-    int a = 5;
-} else {
-    int x;
+//if(a&&b){
+//    int a = 5;
+//} else {
+//    int x;
+//}
+
+for(int a = 5; a && b; a = a + b){
+    int c = a;
 }
 
 //int (x=!a&&b||c);
