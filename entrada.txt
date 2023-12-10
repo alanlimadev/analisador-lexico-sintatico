@@ -1,16 +1,20 @@
 public static void Main () {
         
-    string a = "ayuff &float% ertyu";
-    char b = 'bhsdvhjbhwervi';
-    
-    for(; ;){
-    }
+//    string a = "ayuff &float% ertyu";
+//    char b = 'bhsdvhjbhwervi';
 
-    if(a&&b){
-        int a = 5;
-    } else {
-        int x;
-    }
+    for(; ;)
+        a = b;
+        a = b;
+    
+        
+    
+
+//    if(a&&b){
+//      int a = 5;
+//    } else {
+//        int x;
+//    }
 
     return 9;
 

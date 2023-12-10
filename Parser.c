@@ -167,7 +167,10 @@ void statement()
             return_stmt();
         else
         {
-            error("Declaracao de variavel invalida");
+            if(currentTokenType==STATIC_KW || currentTokenType==MAIN_KW || currentTokenType==ACESS_MOD)
+                error("A function declaration can't be a statement");
+
+            error("Invalid statment");
         }
 
         // printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
@@ -190,10 +193,10 @@ void variable_declaration()
 }
 void variable_attribuition()
 {
-    printf("enter <variable_attribuition>\n");
+    printf("Enter <variable_attribuition>\n");
     identifier();
     assingment();
-    printf("leaving <variable_attribuition>\n");
+    printf("Leaving <variable_attribuition>\n");
 }
 void type()
 {
@@ -201,7 +204,7 @@ void type()
     if (addrCurrentToken->tokenType != VAR_TYPE && addrCurrentToken->tokenType != INT_TYPE)
         error("expected a vartype");
     getNextToken();
-    printf("leaving <type>\n");
+    printf("Leaving <type>\n");
 }
 void identifier()
 {
@@ -209,11 +212,11 @@ void identifier()
     if (addrCurrentToken->tokenType != IDENT)
         error("expected a identifier");
     getNextToken();
-    printf("leaving <identifier>\n");
+    printf("Leaving <identifier>\n");
 }
 
 void variable_list() { //<identifier>
-    printf("enter <variable_list>\n");
+    printf("Enter <variable_list>\n");
 
     if (peekNextToken() != ASSIGN_OP)
     {
@@ -246,7 +249,7 @@ void variable_list() { //<identifier>
             }
         }
     }
-    printf("leaving <variable_list>\n");
+    printf("Leaving <variable_list>\n");
 }
 
 void assingment() {
@@ -266,7 +269,7 @@ void assingment() {
 
 void expression()
 {
-    printf("enter <expression>\n");
+    printf("Enter <expression>\n");
 
     if(isBoolExpression())
         error("Invalid arithmetic expression (Expected only identifiers, integer literals and arithmetic operators)");
@@ -278,11 +281,11 @@ void expression()
         getNextToken();
         term();
     }
-    printf("leaving <expression>\n");
+    printf("Leaving <expression>\n");
 }
 void term()
 {
-    printf("enter <term>\n");
+    printf("Enter <term>\n");
     factor();
     while (addrCurrentToken->tokenType == MULTIPLY_OP || addrCurrentToken->tokenType == DIVIDE_OP)
     {
@@ -293,7 +296,7 @@ void term()
 }
 void factor()
 {
-    printf("enter <factor>\n");
+    printf("Enter <factor>\n");
     if (addrCurrentToken->tokenType == IDENT)
         identifier();
     else if (addrCurrentToken->tokenType == INT_LIT)
@@ -308,12 +311,12 @@ void factor()
             getNextToken();
         }
         else
-            error("expected a ')'");
+            error("Expected a ')'");
     }
     else
         error("right value not recognized");
 
-    printf("leaving <factor>\n");
+    printf("Leaving <factor>\n");
 }
 
 int isBoolExpression()
@@ -391,7 +394,7 @@ void char_()
 
 void bool_expression()
 {
-    printf("enter <bool_expression>\n");
+    printf("Enter <bool_expression>\n");
 
     //if(!isBoolExpression())
     //    error("Invalid boolean expression (Expected only identifiers and boolean operators)");
@@ -402,46 +405,46 @@ void bool_expression()
         getNextToken();
         bool_term();
     }
-    printf("leaving <bool_expression>\n");
+    printf("Leaving <bool_expression>\n");
 }
 
 void bool_term()
 {
-    printf("enter <bool_term>\n");
+    printf("Enter <bool_term>\n");
     bool_factor();
     while (addrCurrentToken->tokenType == AND_OP)
     {
         getNextToken();
         bool_factor();
     }
-    printf("leaving <bool_term>\n");
+    printf("Leaving <bool_term>\n");
 }
 
 void bool_factor()
 {
-    printf("enter <bool_factor>\n");
-    if (currentTokenType == IDENT)
+    printf("Enter <bool_factor>\n");
+    if (currentTokenType==IDENT)
         identifier();
-    else if (currentTokenType == NOT_OP) {
+    else if (currentTokenType==NOT_OP) {
         getNextToken(); // consome o !
         identifier();
     }
     else if(currentTokenType==TRUE_OP || currentTokenType==FALSE_OP)
         getNextToken(); //consome o "true" ou "false"
-    else if (currentTokenType == LEFT_PAREN) {
+    else if (currentTokenType==LEFT_PAREN) {
         getNextToken();
         bool_expression();
-        if (currentTokenType == RIGHT_PAREN)
+        if (currentTokenType==RIGHT_PAREN)
         {
             getNextToken();
         }
         else
-            error("expected a ')'");
+            error("Expected a ')' to close expression");
     }
     else
-        error("expected a logic expression");
+        error("Expected a logic expression");
 
-    printf("leaving <bool_factor>\n");
+    printf("Leaving <bool_factor>\n");
 }
 
 void if_else_statement()
@@ -523,7 +526,7 @@ void while_loop()
 }
 
 void for_loop() {
-    printf("enter <for_loop>\n");
+    printf("Enter <for_loop>\n");
     // Verifica se o lexema é um loop "for"
     if (currentTokenType == FOR_STMT) {
     getNextToken(); //consome o FOR
@@ -575,7 +578,7 @@ void for_loop() {
         }
     embedded_statement();
 
-    printf("leaving <for_loop>\n");
+    printf("Leaving <for_loop>\n");
 }
 int isControlStructure(){
     return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
@@ -587,7 +590,7 @@ void embedded_statement()
     if (addrCurrentToken->tokenType == BRACE_LEFT)
     {
         // Se o bloco de código inicia com uma chave "{"
-        getNextToken();// Consome "{"
+        getNextToken(); //Consome "{"
 
         //isControlStructure() ? control_structures(): statement(); // Avalia o código dentro do bloco
 
@@ -608,25 +611,15 @@ void embedded_statement()
         {
             error("Expected closing brace '}'");
         }
-    }
-    else
-    {
-        // Se for apenas uma única instrução sem chaves
-        // Implemente a lógica para processar uma única instrução (se aplicável)
-        // Isso pode ser uma declaração, atribuição, etc.
-        // Não vou implementar a lógica específica aqui, pois pode variar conforme a necessidade do seu analisador
-        // Certifique-se de lidar com as regras gramaticais da linguagem para uma única instrução
-
-        // Exemplo simples:
-        // processSingleStatement();
-        // getNextToken(); // Avança para o próximo token após processar a instrução
+    } else {
+        statement();
     }
 
     printf("Leaving <embedded_statement>\n");
 }
 
 void return_stmt(){
-    printf("enter <return_stmt>\n");
+    printf("Enter <return_stmt>\n");
 
     if(currentTokenType==RETURN_KW){
         getNextToken(); //consome a palavra chave return
@@ -639,5 +632,5 @@ void return_stmt(){
         error("In <return_stmt>");
     }
 
-    printf("leaving <return_stmt>\n");
+    printf("Leaving <return_stmt>\n");
 }

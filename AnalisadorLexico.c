@@ -104,7 +104,7 @@ void keyWordToken(){
     if(strcmp(lexema,"return")==0)
         return fillToken("RETURN_KW", RETURN_KW);    
 }
-int lookup(int ch){ //responsavel por identificar o token
+void lookup(int ch){ //responsavel por identificar o token
     char next;
     switch (ch)
     {
