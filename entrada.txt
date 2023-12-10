@@ -1,5 +1,5 @@
 static int Main(int[] args){
 
     if(a&&b)
-        string str = "minecraft str &";
+        string str = "minecraft str &|";
 }

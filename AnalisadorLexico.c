@@ -123,19 +123,8 @@ void lookup(int ch){ //responsavel por identificar o token
         fillToken("MULTIPLY_OP",MULTIPLY_OP);
         break;
     case '=':
-        next=getc(in_fp);
-        if(next=='='){
-            //'=' seguido de outro '=', operador de comparacao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            addAndGetNextChar();
-            fillToken("COMPARE_OP", COMPARE_OP);
-        } else {
-            //apenas um '=', operador de atribuicao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            fillToken("ASSIGN_OP", ASSIGN_OP);
-        }
+        addAndGetNextChar();
+        fillToken("ASSIGN_OP", ASSIGN_OP);
         break;
     case '-':
         addAndGetNextChar();
@@ -182,37 +171,30 @@ void lookup(int ch){ //responsavel por identificar o token
         fillToken("RIGHT_SQUARE_BRKT", RIGHT_SQUARE_BRKT);
         break;
     case '&':
+        addChar();
         next= getc(in_fp);
         if(next=='&'){
+            addChar();
+        } else {
             ungetc(next,in_fp);
-            addAndGetNextChar();
         }
-        addAndGetNextChar();
         fillToken("AND_OP", AND_OP);
+        getChar();
         break;
     case '|':
+        addChar();
         next= getc(in_fp);
         if(next=='|'){
+            addChar();
+        } else {
             ungetc(next,in_fp);
-            addAndGetNextChar();
         }
-        addAndGetNextChar();
         fillToken("OR_OP", OR_OP);
+        getChar();
         break;
     case '!':
-         next=getc(in_fp);
-        if(next=='='){
-            //'!' seguido de um '=', operador de comparacao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            addAndGetNextChar();
-            fillToken("COMPARE_OP", COMPARE_OP);
-        } else {
-            //apenas um '!', operador de negacao booleana
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            fillToken("NOT_OP", NOT_OP);
-        }
+        addAndGetNextChar();
+        fillToken("NOT_OP", NOT_OP);
         break;
     case '^':
         addAndGetNextChar();
