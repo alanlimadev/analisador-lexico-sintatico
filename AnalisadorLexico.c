@@ -267,12 +267,8 @@ int lex(){
     }
     if(nextTokenn.tokenType == IDENT)
         keyWordToken();//verifica se o identificador da vez eh keyword    
-    if(nextTokenn.tokenType==UNKNOWN_TOKEN)
-        printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
-    else{
-        //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
-        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount); //insere o token na lista
-    }
+     //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);    
+        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount,lexema); //insere o token na lista
     return nextTokenn.tokenType;
 }
 

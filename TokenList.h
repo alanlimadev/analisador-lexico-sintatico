@@ -51,7 +51,7 @@
 
 
 typedef struct token Token;
-struct token{int tokenType;char name[30];Token* prox;int line;};
+struct token{int tokenType;char name[30];Token* prox;int line;char value[100];};
 Token* create();
-Token* insert(Token* list, int tokenType,char* name, int line);
+Token* insert(Token* list, int tokenType,char* name, int line,char* value);
 void printList(Token* list);
