@@ -112,13 +112,18 @@ void main_function(){
                     getNextToken(); //consome a ]
                 else
                     error("Expected a closing square bracket ']' in variable type of main parameter declaration");
-            }
+            } else if(currentTokenType==RIGHT_SQUARE_BRKT)
+                error("There is no opening square bracket '[' in variable type of main parameter declaration");
 
             if(currentTokenType==ARGS_KW)
                 getNextToken(); //consome o nome da variavel parametro args
+            else  if(currentTokenType==IDENT)
+                identifier();
+            else
+                error("Expected a identifier name for the main function parameter variable");
 
             
-        } else error("Expected the name args for the main function parameter variable");
+        }
     }
 
     if(currentTokenType!=RIGHT_PAREN)

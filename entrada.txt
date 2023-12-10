@@ -1,4 +1,4 @@
-static int Main(int[] args){
+static int Main(){
 
     if(a&&b)
         string str = "minecraft str &|";
