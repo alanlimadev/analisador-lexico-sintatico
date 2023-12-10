@@ -3,9 +3,11 @@ public static void Main () {
 //    string a = "ayuff &float% ertyu";
 //    char b = 'bhsdvhjbhwervi';
 
-    for(; ;)
-        a = b;
-        a = b;
+    float a = 69.696969;
+
+//    for(; ;)
+//        a = b;
+//        a = b;
     
         
     

@@ -294,13 +294,41 @@ void term()
     }
     printf("leaving <term>\n");
 }
+
+void float_number(){
+    printf("Enter <float_number>\n");
+    if(currentTokenType==INT_LIT) {
+        getNextToken(); //consome a primeira parte do numero float
+        if(currentTokenType==DOT){
+            getNextToken(); //consome o ponto
+            if(currentTokenType==INT_LIT){
+                getNextToken(); //consome a segunda parte do numero float
+            } else error("Expecting a float number");
+        } else error("Expecting a float number");
+    } else error("Expecting a float number");
+
+    printf("Leaving <float_number>\n");
+}
+
+void integer_number() {
+    printf("Enter <integer_number>\n");
+    if(currentTokenType!=INT_LIT)
+        error("Expecting a integer number");
+
+    getNextToken();
+    printf("Leaving <integer_number>\n");
+}
+
 void factor()
 {
     printf("Enter <factor>\n");
     if (addrCurrentToken->tokenType == IDENT)
         identifier();
     else if (addrCurrentToken->tokenType == INT_LIT)
-        getNextToken();
+        if(peekNextToken()==DOT)
+            float_number();
+        else 
+            integer_number();
     else if (addrCurrentToken->tokenType == LEFT_PAREN)
     {
         //printf("%d", currentTokenType);
@@ -329,7 +357,7 @@ int isBoolExpression()
         if (type == OR_OP || type == NOT_OP || type == AND_OP)
             return 1;
 
-        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP )
+        if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP || type==DOT)
             return 0;
         tokenAux = tokenAux->prox;
     }
@@ -386,7 +414,7 @@ void char_()
             getNextToken(); // consome a ultima '
         }
         else
-            error("Single Quotations marks should only be used for assigning char type (only one character)");
+            error("Single Quotations marks should only be used for char type (only one character)");
     }
 
     printf("Leaving <char_>\n");
@@ -624,7 +652,7 @@ void return_stmt(){
     if(currentTokenType==RETURN_KW){
         getNextToken(); //consome a palavra chave return
         if(currentTokenType==INT_LIT){
-            getNextToken(); //consome o inteiro literal
+            expression();
         } else {
             error("Expected a integer interal for the return command");
         }
