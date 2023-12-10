@@ -25,15 +25,15 @@
 #define NOT_OP 25
 #define COMPARE_OP 26
 
-#define FOR_STMT 29
-#define IF_STMT 30
-#define ELSE_STMT 31
+#define FOR_COMMAND 29
+#define IF_COMMAND 30
+#define ELSE_COMMAND 31
 
 #define ACESS_MOD 32
 #define LEFT_PAREN 33
 #define RIGHT_PAREN 34
 #define STATIC_KW 35
-#define WHILE_STMT 36
+#define WHILE_COMMAND 36
 #define BRACE_LEFT 37
 #define BRACE_RIGHT 38
 #define DQUOT_MARK 40

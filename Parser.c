@@ -8,9 +8,16 @@
 //Unica funcao visivel fora desse arquivo:
 void parserFunction(Token *tokenList);
 
+//Funcao de Erro:
 void error(char *errorMsg);
 
-// Funcoes da Gramatica:
+//Funcao que avanca para o proximo token de TokenList:
+void getNextToken();
+
+//Funcao que "espia" e retorna o tipo do proximo token de TokenList:
+int peekNextToken();
+
+//Funcoes da Gramatica:
 void program();
 void main_function();
 void statement();
@@ -36,9 +43,10 @@ void while_loop();
 void for_loop();
 void return_stmt();
 
-//funcoes auxiliares:
+//Funcoes auxiliares:
 int isBoolExpression();
 int isControlStructure();
+
 
 Token *addrCurrentToken;
 int currentTokenType = UNKNOWN;
@@ -151,11 +159,11 @@ void main_function(){
 
 void control_structures()
 {
-    if (currentTokenType == IF_STMT)
+    if (currentTokenType == IF_COMMAND)
         if_else_statement();
-    else if (currentTokenType == WHILE_STMT)
+    else if (currentTokenType == WHILE_COMMAND)
         while_loop();
-    else if (currentTokenType == FOR_STMT)
+    else if (currentTokenType == FOR_COMMAND)
         for_loop();
 }
 
@@ -348,7 +356,6 @@ void factor()
             integer_number();
     else if (addrCurrentToken->tokenType == LEFT_PAREN)
     {
-        //printf("%d", currentTokenType);
         getNextToken();
         expression();
         if (addrCurrentToken->tokenType == RIGHT_PAREN)
@@ -501,7 +508,7 @@ void if_else_statement()
 {
     printf("Enter <if_else_statement>\n");
 
-    if (addrCurrentToken->tokenType == IF_STMT)
+    if (addrCurrentToken->tokenType == IF_COMMAND)
     {
         getNextToken(); // Consome "if"
 
@@ -515,7 +522,7 @@ void if_else_statement()
                 getNextToken();       // Consome ")"
                 embedded_statement(); // Avalia o bloco de código dentro do "if"
 
-                if (addrCurrentToken->tokenType == ELSE_STMT)
+                if (addrCurrentToken->tokenType == ELSE_COMMAND)
                 {
                     getNextToken();       // Consome "else"
                     embedded_statement(); // Avalia o bloco de código dentro do "else"
@@ -543,7 +550,7 @@ void while_loop()
 {
     printf("Enter <while_loop>\n");
 
-    if (addrCurrentToken->tokenType == WHILE_STMT)
+    if (addrCurrentToken->tokenType == WHILE_COMMAND)
     {
         getNextToken(); // Consome "while"
 
@@ -578,7 +585,7 @@ void while_loop()
 void for_loop() {
     printf("Enter <for_loop>\n");
     // Verifica se o lexema é um loop "for"
-    if (currentTokenType == FOR_STMT) {
+    if (currentTokenType == FOR_COMMAND) {
     getNextToken(); //consome o FOR
 
         if (currentTokenType != LEFT_PAREN) {
@@ -631,7 +638,7 @@ void for_loop() {
     printf("Leaving <for_loop>\n");
 }
 int isControlStructure(){
-    return (currentTokenType==IF_STMT || currentTokenType==WHILE_STMT || currentTokenType == FOR_STMT);
+    return (currentTokenType==IF_COMMAND || currentTokenType==WHILE_COMMAND || currentTokenType == FOR_COMMAND);
 }
 void embedded_statement()
 {

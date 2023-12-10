@@ -84,17 +84,17 @@ void keyWordToken(){
     if(strcmp(lexema,"static")==0)
         return fillToken("STATIC_KW",STATIC_KW);
     if(strcmp(lexema,"if")==0)
-        return fillToken("IF_STMT",IF_STMT);
+        return fillToken("IF_COMMAND",IF_COMMAND);
     if(strcmp(lexema,"args")==0)
         return fillToken("ARGS_KW", ARGS_KW);
     if(strcmp(lexema,"Main")==0)
         return fillToken("MAIN_KW",MAIN_KW);    
     if(strcmp(lexema,"while")==0)
-        return fillToken("WHILE_STMT",WHILE_STMT);
+        return fillToken("WHILE_COMMAND",WHILE_COMMAND);
     if(strcmp(lexema,"for")==0)
-        return fillToken("FOR_STMT",FOR_STMT);
+        return fillToken("FOR_COMMAND",FOR_COMMAND);
     if(strcmp(lexema,"else")==0)
-        return fillToken("ELSE_STMT",ELSE_STMT);
+        return fillToken("ELSE_COMMAND",ELSE_COMMAND);
     if(strcmp(lexema,"true")==0)
         return fillToken("TRUE_OP",TRUE_OP);
     if(strcmp(lexema,"false")==0)
