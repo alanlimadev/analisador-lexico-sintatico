@@ -103,10 +103,22 @@ void main_function(){
         error("Expected '(' for opening the main function parameters section");
     else {
         getNextToken(); //consome o (
-        if(currentTokenType==STRING_ARG){
-            getNextToken(); //consome a declaracao de variavel parametro string[]
-            identifier();
-        }
+        if(currentTokenType==VAR_TYPE || currentTokenType==INT_TYPE){
+            getNextToken(); //consome o tipo da declaracao da variavel parametro
+
+            if(currentTokenType==LEFT_SQUARE_BRKT) {
+                 getNextToken(); //consome a [
+                if(currentTokenType==RIGHT_SQUARE_BRKT)
+                    getNextToken(); //consome a ]
+                else
+                    error("Expected a closing square bracket ']' in variable type of main parameter declaration");
+            }
+
+            if(currentTokenType==ARGS_KW)
+                getNextToken(); //consome o nome da variavel parametro args
+
+            
+        } else error("Expected the name args for the main function parameter variable");
     }
 
     if(currentTokenType!=RIGHT_PAREN)
@@ -154,7 +166,7 @@ void statement()
         {
             variable_declaration();
         }
-        else if (addrCurrentToken->tokenType == IDENT)
+        else if (addrCurrentToken->tokenType == IDENT || addrCurrentToken->tokenType == UNKNOWN_TOKEN)
         {
             variable_attribuition();
             while (addrCurrentToken->tokenType == COMMA)
@@ -170,7 +182,7 @@ void statement()
             if(currentTokenType==STATIC_KW || currentTokenType==MAIN_KW || currentTokenType==ACESS_MOD)
                 error("A function declaration can't be a statement");
 
-            error("Invalid statment");
+            error("Invalid statement");
         }
 
         // printf("NOME: %s || TIPO: %d\n", CurrentToken->name, CurrentToken->tokenType);
@@ -391,13 +403,14 @@ void string()
     if (currentTokenType == DQUOT_MARK)
     {
         getNextToken(); // consome a primeira "
-        while (currentTokenType != DQUOT_MARK)
-        {
-            getNextToken(); // consome todos os caracteres ate a proxima aspas duplas
-            if (currentTokenType == EOF)
-                error("The quotation mark for string value never closed");
-        }
-        getNextToken(); // consome a ultima "
+
+        while (currentTokenType!=DQUOT_MARK)
+            getNextToken(); // consome todos os tokens ate a proxima aspas duplas      
+        
+        if(currentTokenType==DQUOT_MARK)
+            getNextToken(); // consome a ultima "
+        else
+            error("The quotation mark for string value never closed");
     }
     printf("Leaving <string>\n");
 }
@@ -408,13 +421,17 @@ void char_()
     if (currentTokenType == SQUOT_MARK)
     {
         getNextToken(); // consome a primeira '
-        getNextToken(); // consome o char (supostamente, a explicacao do erro ta na TODO list)
-        if (currentTokenType == SQUOT_MARK)
-        {
-            getNextToken(); // consome a ultima '
-        }
-        else
+        if(strlen(addrCurrentToken->value)>1)
             error("Single Quotations marks should only be used for char type (only one character)");
+
+        getNextToken(); // consome o char
+
+        if (currentTokenType == SQUOT_MARK) {
+            getNextToken(); // consome a ultima '
+        } else {
+            error("Expected a single quotation mark (') for closing the char type value");
+        }
+            
     }
 
     printf("Leaving <char_>\n");

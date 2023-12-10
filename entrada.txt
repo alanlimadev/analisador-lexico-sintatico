@@ -1,3 +1,5 @@
-public static void Main(){
-    int x = '@$';
+static int Main(int[] args){
+
+    if(a&&b)
+        string str = "minecraft str &";
 }

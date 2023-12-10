@@ -46,6 +46,8 @@
 #define INT_TYPE 47
 #define STRING_ARG 48
 #define ARGS_KW 49
+#define LEFT_SQUARE_BRKT 51
+#define RIGHT_SQUARE_BRKT 52
 #define UNKNOWN_TOKEN 404
 
 
