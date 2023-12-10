@@ -5,10 +5,14 @@
 #include <string.h>
 #include <ctype.h>
 
+//Unica funcao visivel fora desse arquivo:
+void parserFunction(Token *tokenList);
+
 void error(char *errorMsg);
 
 // Funcoes da Gramatica:
 void program();
+void main_function();
 void statement();
 void variable_declaration();
 void variable_attribuition();
@@ -30,6 +34,9 @@ void embedded_statement();
 void control_structures();
 void while_loop();
 void for_loop();
+void return_stmt();
+
+//funcoes auxiliares:
 int isBoolExpression();
 int isControlStructure();
 
@@ -65,15 +72,60 @@ void parserFunction(Token *tokenList)
 void program()
 {
     printf("Enter <program>\n");
-    while (currentTokenType != EOF)
-    {
-        //*if (currentTokenType == IF_STMT | currentTokenType == WHILE_STMT | currentTokenType == FOR_STMT)
-            //control_structures();
-        //else
-            statement();
-        
-    }
+    main_function();
     printf("Leaving <program>\n");
+}
+
+void main_function(){
+    printf("Enter <main_function>\n");
+////////////////////////////////////////////////////////////////////////////////////////////////////
+//Codigo da main:
+
+    if(currentTokenType==ACESS_MOD)
+        getNextToken(); //consome as palavras chaves "public", "private" ou "protected"
+
+    if(currentTokenType==STATIC_KW)
+        getNextToken(); //consome a palavra chave "static"
+    
+    if(currentTokenType==VOID_KW || currentTokenType==INT_TYPE)
+        getNextToken(); //consome as palavras chave "void" ou "int"
+
+    if(currentTokenType==MAIN_KW)
+        getNextToken(); //consome a palavra chave "main"
+    else
+        error("Expected the main keyword for declaring main function");
+
+    if(currentTokenType!=LEFT_PAREN)
+        error("Expected '(' for opening the main function parameters section");
+    else {
+        getNextToken(); //consome o (
+        if(currentTokenType==STRING_ARG){
+            getNextToken(); //consome a declaracao de variavel parametro string[]
+            identifier();
+        }
+    }
+
+    if(currentTokenType!=RIGHT_PAREN)
+        error("Expected ')' for closing the main function parameters section");
+    else
+        getNextToken(); //consome o )
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+    if(currentTokenType==BRACE_LEFT){
+        getNextToken(); //consome o {
+    } else {
+        error("Expected a '{' for the starting the code block of main function");
+    }
+    
+    while (currentTokenType != BRACE_RIGHT){
+        if(currentTokenType==EOF)
+            error("The block code of the main function was never closed with '}'");
+        
+        statement();
+    }
+
+
+    printf("Leaving <main_function>\n");
 }
 
 void control_structures()
@@ -92,7 +144,6 @@ void statement()
 
     if(isControlStructure()){
         control_structures();
-
     } else {
 
         if (addrCurrentToken->tokenType == VAR_TYPE  || addrCurrentToken->tokenType == INT_TYPE)
@@ -103,11 +154,13 @@ void statement()
         {
             variable_attribuition();
             while (addrCurrentToken->tokenType == COMMA)
-            {
+            { //ACHO (CIZE) QUE ESSE LOOP WHILE DA PRA TIRAR EINN (so nn vou mexer agr pq pode dar B.O.)
                 getNextToken(); // consome ,
                 variable_attribuition();
             }
         }
+        else if(currentTokenType==RETURN_KW)
+            return_stmt();
         else
         {
             error("Declaracao de variavel invalida");
@@ -120,8 +173,6 @@ void statement()
         getNextToken(); //consome o ;
 
     }
-
-    
 
     printf("Leaving <statement>\n");
 }
@@ -157,8 +208,6 @@ void identifier()
     printf("leaving <identifier>\n");
 }
 
-// int a, b, c;
-// int a=5, b=7, c=9;
 void variable_list() { //<identifier>
     printf("enter <variable_list>\n");
 
@@ -340,8 +389,8 @@ void bool_expression()
 {
     printf("enter <bool_expression>\n");
 
-    if(!isBoolExpression())
-        error("Invalid boolean expression (Expected only identifiers and boolean operators)");
+    //if(!isBoolExpression())
+    //    error("Invalid boolean expression (Expected only identifiers and boolean operators)");
 
     bool_term(); 
     while (addrCurrentToken->tokenType == OR_OP)
@@ -373,6 +422,8 @@ void bool_factor()
         getNextToken(); // consome o !
         identifier();
     }
+    else if(currentTokenType==TRUE_OP || currentTokenType==FALSE_OP)
+        getNextToken(); //consome o "true" ou "false"
     else if (currentTokenType == LEFT_PAREN) {
         getNextToken();
         bool_expression();
@@ -568,4 +619,21 @@ void embedded_statement()
     }
 
     printf("Leaving <embedded_statement>\n");
+}
+
+void return_stmt(){
+    printf("enter <return_stmt>\n");
+
+    if(currentTokenType==RETURN_KW){
+        getNextToken(); //consome a palavra chave return
+        if(currentTokenType==INT_LIT){
+            getNextToken(); //consome o inteiro literal
+        } else {
+            error("Expected a integer interal for the return command");
+        }
+    } else {
+        error("In <return_stmt>");
+    }
+
+    printf("leaving <return_stmt>\n");
 }
