@@ -71,28 +71,30 @@ void getNonComments(){
 void keyWordToken(){
     if(strcmp(lexema,"public")==0)
         return fillToken("ACESS_MOD",ACESS_MOD);
+    if(strcmp(lexema,"private")==0)
+        return fillToken("ACESS_MOD",ACESS_MOD);
+    if(strcmp(lexema,"protected")==0)
+        return fillToken("ACESS_MOD",ACESS_MOD);
     if(strcmp(lexema,"void")==0)
-        return fillToken("VOID_KW",VOID_KW);    
+        return fillToken("VOID_KW",VOID_KW);
     if(strcmp(lexema,"char")==0||strcmp(lexema,"float")==0||strcmp(lexema,"double")==0||strcmp(lexema,"bool")==0||strcmp(lexema,"string")==0)
         return fillToken("VAR_TYPE",VAR_TYPE);
-    if(strcmp(lexema,"string[]")==0)
-        return fillToken("STRING_TYPE",VAR_TYPE);
     if(strcmp(lexema,"int")==0)
         return fillToken("INT_TYPE",INT_TYPE);
     if(strcmp(lexema,"static")==0)
         return fillToken("STATIC_KW",STATIC_KW);
     if(strcmp(lexema,"if")==0)
-        return fillToken("IF_STMT",IF_STMT);
+        return fillToken("IF_COMMAND",IF_COMMAND);
     if(strcmp(lexema,"args")==0)
         return fillToken("ARGS_KW", ARGS_KW);
     if(strcmp(lexema,"Main")==0)
         return fillToken("MAIN_KW",MAIN_KW);    
     if(strcmp(lexema,"while")==0)
-        return fillToken("WHILE_STMT",WHILE_STMT);
+        return fillToken("WHILE_COMMAND",WHILE_COMMAND);
     if(strcmp(lexema,"for")==0)
-        return fillToken("FOR_STMT",FOR_STMT);
+        return fillToken("FOR_COMMAND",FOR_COMMAND);
     if(strcmp(lexema,"else")==0)
-        return fillToken("ELSE_STMT",ELSE_STMT);
+        return fillToken("ELSE_COMMAND",ELSE_COMMAND);
     if(strcmp(lexema,"true")==0)
         return fillToken("TRUE_OP",TRUE_OP);
     if(strcmp(lexema,"false")==0)
@@ -100,7 +102,7 @@ void keyWordToken(){
     if(strcmp(lexema,"return")==0)
         return fillToken("RETURN_KW", RETURN_KW);    
 }
-int lookup(int ch){ //responsavel por identificar o token
+void lookup(int ch){ //responsavel por identificar o token
     char next;
     switch (ch)
     {
@@ -121,19 +123,8 @@ int lookup(int ch){ //responsavel por identificar o token
         fillToken("MULTIPLY_OP",MULTIPLY_OP);
         break;
     case '=':
-        next=getc(in_fp);
-        if(next=='='){
-            //'=' seguido de outro '=', operador de comparacao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            addAndGetNextChar();
-            fillToken("COMPARE_OP", COMPARE_OP);
-        } else {
-            //apenas um '=', operador de atribuicao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            fillToken("ASSIGN_OP", ASSIGN_OP);
-        }
+        addAndGetNextChar();
+        fillToken("ASSIGN_OP", ASSIGN_OP);
         break;
     case '-':
         addAndGetNextChar();
@@ -171,38 +162,39 @@ int lookup(int ch){ //responsavel por identificar o token
         addAndGetNextChar();
         fillToken("BRACE_RIGHT", BRACE_RIGHT);
         break;
+    case '[':
+        addAndGetNextChar();
+        fillToken("LEFT_SQUARE_BRKT", LEFT_SQUARE_BRKT);
+        break;
+    case ']':
+        addAndGetNextChar();
+        fillToken("RIGHT_SQUARE_BRKT", RIGHT_SQUARE_BRKT);
+        break;
     case '&':
+        addChar();
         next= getc(in_fp);
         if(next=='&'){
+            addChar();
+        } else {
             ungetc(next,in_fp);
-            addAndGetNextChar();
         }
-        addAndGetNextChar();
         fillToken("AND_OP", AND_OP);
+        getChar();
         break;
     case '|':
+        addChar();
         next= getc(in_fp);
         if(next=='|'){
+            addChar();
+        } else {
             ungetc(next,in_fp);
-            addAndGetNextChar();
         }
-        addAndGetNextChar();
         fillToken("OR_OP", OR_OP);
+        getChar();
         break;
     case '!':
-         next=getc(in_fp);
-        if(next=='='){
-            //'!' seguido de um '=', operador de comparacao
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            addAndGetNextChar();
-            fillToken("COMPARE_OP", COMPARE_OP);
-        } else {
-            //apenas um '!', operador de negacao booleana
-            ungetc(next,in_fp);
-            addAndGetNextChar();
-            fillToken("NOT_OP", NOT_OP);
-        }
+        addAndGetNextChar();
+        fillToken("NOT_OP", NOT_OP);
         break;
     case '^':
         addAndGetNextChar();
@@ -263,12 +255,8 @@ int lex(){
     }
     if(nextTokenn.tokenType == IDENT)
         keyWordToken();//verifica se o identificador da vez eh keyword    
-    if(nextTokenn.tokenType==UNKNOWN_TOKEN)
-        printf("Lexema: %s nao reconhecido error in line: %d\n", lexema,lineCount);
-    else{
-        //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);
-        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount); //insere o token na lista
-    }
+     //printf("Proximo token: %s value: %d, Proximo lexema: %s\n",nextTokenn.name,nextTokenn.tokenType,lexema);    
+        tokenList=insert(tokenList,nextTokenn.tokenType,nextTokenn.name, lineCount,lexema); //insere o token na lista
     return nextTokenn.tokenType;
 }
 

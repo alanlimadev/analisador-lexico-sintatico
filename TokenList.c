@@ -6,13 +6,13 @@
 Token* create(){
     return NULL;
 }
-Token* insert(Token* list, int tokenType,char* name,int line){
+Token* insert(Token* list, int tokenType,char* name,int line, char* value){
     Token* newToken = (Token*)malloc(sizeof(Token));
     strcpy(newToken->name,name);
     newToken->tokenType=tokenType;
     newToken->line = line;
     newToken->prox=NULL;
-
+    strcpy(newToken->value,value);
     if(list==NULL){
         return newToken;
     }
@@ -28,7 +28,7 @@ void printList(Token* list){
     Token* aux=list;
     while(aux!=NULL){
         //printf("Linha %d) token: %s\n",aux->line, aux->name);
-        printf("%d) ""%s"" (Tipo: %d)\n", aux->line, aux->name, aux->tokenType);
+        printf("%d) ""%s"" (lexema: %s)\n", aux->line, aux->name, aux->value);
         aux=aux->prox;
     }
 }
