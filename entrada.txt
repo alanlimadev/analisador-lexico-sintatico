@@ -1,43 +1,17 @@
-Main () {
-//Testes Realizados, os erros estão sendo apontados(alguns com msg genericas) mas nesse exemplo, na linha 5 ele nao aponta a linha correta pois ele pulou para o tokenseguinte que esta na linha 6
+public static void Main () {
+        
+    string a = "ayuff &float% ertyu";
+    char b = 'bhsdvhjbhwervi';
+    
+    for(; ;){
+    }
 
-//=     !=      ==      &&      ||      !
-//'     "
+    if(a&&b){
+        int a = 5;
+    } else {
+        int x;
+    }
 
+    return 9;
 
-//int x= a&&b||!c;
-//a = a&&b||!c;
-
-//while(!a){
-//        int x = 0;
-//        if(a||B){
-//           int cize;
-//       }
-//}
-
-//for(; a&&true; x=x+6){
-//    a=b;
-//}
-
-return 9;
-
-//if(a&&b){
-//    int a = 5;
-//} else {
-//    int x;
-//}
-
-string a = "ayuff float ertyu";
-char b = 'bhsdvhjbhwervi';
-
-//int (x=!a&&b||c);
-//int y = 'a';
-//int = e&&b;
-//int x,y,z;
-//int x=1;
-//int x=1, i= 1;
-//int x = a;
-//int x = 1, y = 2;
-//int a;
-//String = 10;
 }

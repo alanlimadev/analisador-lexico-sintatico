@@ -86,9 +86,13 @@ void main_function(){
 
     if(currentTokenType==STATIC_KW)
         getNextToken(); //consome a palavra chave "static"
-    
+    else 
+        error("Expected static keyword for main function declaration");
+
     if(currentTokenType==VOID_KW || currentTokenType==INT_TYPE)
         getNextToken(); //consome as palavras chave "void" ou "int"
+    else
+        error("Expected a void or a int return type for main function");
 
     if(currentTokenType==MAIN_KW)
         getNextToken(); //consome a palavra chave "main"
