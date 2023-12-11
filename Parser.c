@@ -397,7 +397,7 @@ int isBoolExpression()
     while (tokenAux->prox != NULL)
     {
         type = tokenAux->tokenType;
-        if (type == OR_OP || type == NOT_OP || type == AND_OP)
+        if (type == OR_OP || type == NOT_OP || type == AND_OP || type==TRUE_OP||type==FALSE_OP)
             return 1;
 
         if (type == INT_LIT || type == SUM_OP || type == SUB_OP || type == DIVIDE_OP || type == MULTIPLY_OP || type == DOT)
