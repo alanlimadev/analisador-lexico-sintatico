@@ -1,6 +1,25 @@
-## Analisador Léxico e Sintático
-Para rodar via terminal LINUX:<br>
-`gcc -o *.c && ./AnalisadorLexico`
-Para Rodar via terminal Windows(Power Shell):<br>
-`gcc -o *.c && ./AnalisadorLexico.exe`
->>>>>>> origin/Parser
+
+# Analisador Léxico e Sintático
+
+Um analisador léxico converte código em tokens, enquanto o analisador sintático verifica se a estrutura dos tokens segue a gramática definida.
+
+## Autores
+
+- [@alanlimadev](https://www.github.com/alanlimadev)
+- [@CizeLucas](https://www.github.com/CizeLucas)
+- [@jvictorcostaa](https://www.github.com/jvictorcostaa)
+- [@MicaiasMartins120](https://www.github.com/MicaiasMartins120)
+- [@pauloherbt](https://www.github.com/pauloherbt)
+- [@pedromsh](https://www.github.com/pedromsh)
+## Instalação
+
+```bash
+  git clone https://github.com/alanlimadev/analisador-lexico-sintatico.git
+
+  cd analisador-lexico-sintatico
+
+  gcc *.c -o myprogram 
+
+  ./myprogram.exe
+```
+    
